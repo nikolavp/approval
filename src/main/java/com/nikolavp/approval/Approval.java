@@ -38,19 +38,18 @@ public class Approval {
      */
     public void verify(byte[] value, Path filePath) {
         File file = filePath.toFile();
-
+        Path approvalPath = getApprovalPath(file.toPath());
         if (!file.exists()) {
-            Path path = getApprovalPath(filePath);
             try {
-                fileSystemReadWriter.write(path, value);
+                fileSystemReadWriter.write(approvalPath, value);
             } catch (IOException e) {
-                throw new AssertionError("Couldn't write file for approval " + file, e);
+                throw new AssertionError("Couldn't write file for approval " + approvalPath, e);
             }
-            if (reporter.approveNew(value, file)) {
+            if (reporter.approveNew(value, approvalPath.toFile(), file)) {
                 try {
-                    fileSystemReadWriter.move(path, filePath);
+                    fileSystemReadWriter.move(approvalPath, filePath);
                 } catch (IOException e) {
-                    String errorMessage = String.format("Couldn't move file for approval[%s] to the destination [%s]", path.toAbsolutePath(), filePath.toAbsolutePath());
+                    String errorMessage = String.format("Couldn't move file for approval[%s] to the destination [%s]", approvalPath.toAbsolutePath(), filePath.toAbsolutePath());
                     throw new AssertionError(errorMessage);
                 }
             }
@@ -59,7 +58,12 @@ public class Approval {
         try {
             byte[] fileContent = fileSystemReadWriter.readFully(file.toPath());
             if (!Arrays.equals(fileContent, value)) {
-                reporter.notTheSame(fileContent, value, file);
+                try {
+                    fileSystemReadWriter.write(approvalPath, value);
+                } catch (IOException e) {
+                    throw new AssertionError("Couldn't write the new approval file " + file, e);
+                }
+                reporter.notTheSame(fileContent, file, value, approvalPath.toFile());
             }
         } catch (IOException e) {
             throw new AssertionError("Couldn't read the previous content in file " + file, e);

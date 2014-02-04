@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
+ * This class is mostly used for indirection in the tests. We just don't like static utility classes.
  * Created by ontotext on 2/2/14.
  */
 interface FileSystemUtils {

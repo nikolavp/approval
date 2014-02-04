@@ -9,7 +9,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -33,8 +32,6 @@ public class ApprovalTest {
     @Rule
     public TestTempFile testFile = new TestTempFile();
 
-    private static final String VALUE = "some\nmultiline\nnsimple\nstring";
-
     byte[] getFileContent(File file) throws IOException {
         return Files.readAllBytes(file.toPath());
     }
@@ -44,29 +41,29 @@ public class ApprovalTest {
         //assign
 
         //act
-        new Approval(reporter).verify(VALUE.getBytes(), testFile.file().toPath());
+        new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
 
         //assert
-        File fileForApproval = Approval.getApprovalPath(testFile.file().toPath()).toFile();
+        File fileForApproval = TestUtils.forApproval(testFile);
         assertThat(fileForApproval.exists(), is(true));
-        assertThat(getFileContent(fileForApproval), equalTo(VALUE.getBytes()));
-        verify(reporter).approveNew(VALUE.getBytes(), testFile.file());
+        assertThat(getFileContent(fileForApproval), equalTo(TestUtils.VALUE.getBytes()));
+        verify(reporter).approveNew(TestUtils.VALUE.getBytes(), fileForApproval, testFile.file());
         Mockito.verifyNoMoreInteractions(reporter);
     }
 
     @Test(expected = AssertionError.class)
     public void shouldThrowAssertionError_IfCannotWriteNewApprovalFile() throws Exception {
         doThrow(new IOException("test error")).when(fileSystemUtils).write(any(Path.class), any(byte[].class));
-        new Approval(reporter, fileSystemUtils).verify(VALUE.getBytes(), testFile.file().toPath());
+        new Approval(reporter, fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
     }
 
     @Test(expected = AssertionError.class)
     public void shouldThrowAssertionError_IfCannotMoveApprovalFile() throws Exception {
         //arrange
         doThrow(new IOException("test error moving")).when(fileSystemUtils).move(any(Path.class), any(Path.class));
-        when(reporter.approveNew(any(byte[].class), any(File.class))).thenReturn(true);
+        when(reporter.approveNew(any(byte[].class), any(File.class), any(File.class))).thenReturn(true);
 
-        new Approval(reporter, fileSystemUtils).verify(VALUE.getBytes(), testFile.file().toPath());
+        new Approval(reporter, fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
     }
 
     @Test(expected = AssertionError.class)
@@ -74,49 +71,52 @@ public class ApprovalTest {
         //arrange
         when(fileSystemUtils.readFully(any(Path.class))).thenThrow(new IOException("read test exception"));
         testFile.file().createNewFile();
-        new Approval(reporter, fileSystemUtils).verify(VALUE.getBytes(), testFile.file().toPath());
+        new Approval(reporter, fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
 
 
     }
 
-    @Test
-    public void shouldThrowAnAssertionErrorIfUserDoesntApproveTheNew() {
+    @Test(expected = AssertionError.class)
+    public void shouldThrowAnAssertionError_IfItCannotWriteTheNewValueToApprovalFile() throws Exception {
+        //arrange
+        testFile.file().createNewFile();
 
+        doThrow(new IOException("cannot create approval file")).when(fileSystemUtils).write(TestUtils.forApproval(testFile).toPath(), TestUtils.VALUE.getBytes());
+        new Approval(reporter, fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
     }
 
     @Test
     public void shouldMoveCreatedFileIfReporterAcceptsIt() throws Exception {
         //assign
-        when(reporter.approveNew(Mockito.any(byte[].class), Mockito.any(File.class))).thenReturn(true);
-
+        when(reporter.approveNew(Mockito.any(byte[].class), any(File.class), Mockito.any(File.class))).thenReturn(true);
 
         //act
-        new Approval(reporter).verify(VALUE.getBytes(), testFile.file().toPath());
+        new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
 
         //assert
         assertThat(testFile.file().exists(), is(true));
-        File fileForApproval = Approval.getApprovalPath(testFile.file().toPath()).toFile();
+        File fileForApproval = TestUtils.forApproval(testFile);
         assertThat(fileForApproval.exists(), is(false));
-        assertThat(getFileContent(testFile.file()), equalTo(VALUE.getBytes()));
-        verify(reporter).approveNew(VALUE.getBytes(), testFile.file());
+        assertThat(getFileContent(testFile.file()), equalTo(TestUtils.VALUE.getBytes()));
+        verify(reporter).approveNew(TestUtils.VALUE.getBytes(), TestUtils.forApproval(testFile), testFile.file());
         Mockito.verifyNoMoreInteractions(reporter);
     }
 
     @Test
     public void shouldCallTheReporterIfAnOldFileExistsButIsNotTheSame() throws Exception{
-        String valueWithDifference = VALUE + "difference";
+        String valueWithDifference = TestUtils.VALUE + "difference";
         Files.write(testFile.file().toPath(), valueWithDifference.getBytes());
 
-        new Approval(reporter).verify(VALUE.getBytes(), testFile.file().toPath());
-        verify(reporter).notTheSame(valueWithDifference.getBytes(), VALUE.getBytes(), testFile.file());
+        new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        verify(reporter).notTheSame(valueWithDifference.getBytes(), testFile.file(), TestUtils.VALUE.getBytes(), TestUtils.forApproval(testFile));
         Mockito.verifyNoMoreInteractions(reporter);
     }
 
     @Test
     public void shouldNotCallTheReporterIfAnOldFileAndIsTheSame() throws Exception{
-        Files.write(testFile.file().toPath(), VALUE.getBytes());
+        Files.write(testFile.file().toPath(), TestUtils.VALUE.getBytes());
 
-        new Approval(reporter).verify(VALUE.getBytes(), testFile.file().toPath());
+        new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
         Mockito.verifyNoMoreInteractions(reporter);
     }
 }
