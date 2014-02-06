@@ -2,6 +2,8 @@ package com.nikolavp.approval.reporters;
 
 import com.nikolavp.approval.TestTempFile;
 import com.nikolavp.approval.TestUtils;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,13 +15,17 @@ import java.io.IOException;
 
 import static com.nikolavp.approval.TestUtils.RAW_VALUE;
 import static com.nikolavp.approval.TestUtils.forApproval;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
- * Created by ontotext on 2/2/14.
+ * Created by nikolavp on 2/2/14.
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ExecutableDifferenceReporterTest {
 
+    public static final int ERROR_EXIT_CODE = 2;
+    public static final int OK_CODE = 0;
     @Rule
     public TestTempFile testFile = new TestTempFile();
 
@@ -28,16 +34,45 @@ public class ExecutableDifferenceReporterTest {
 
     @Test(expected = AssertionError.class)
     public void shouldThrowAssertionError_IfThereIsErrorWhileExecuting() throws Exception {
-        Mockito.when(runtime.exec(Mockito.any(String[].class))).thenThrow(new IOException("error in exec"));
-        new ExecutableDifferenceReporter("some command", runtime).approveNew(RAW_VALUE, forApproval(testFile), testFile.file());
+        when(runtime.exec(Mockito.any(String[].class))).thenThrow(new IOException("error in exec"));
+        new ExecutableDifferenceReporter("some command", null, runtime).approveNew(RAW_VALUE, forApproval(testFile), testFile.file());
     }
 
     @Test
-    public void shouldProperlyExecuteCommandOnNewContent() {
+    public void shouldReturnFalseIfCommandThatWasExecutedReturnedBadExitCode() throws Exception {
+        for(int exitCode : new int[] {ERROR_EXIT_CODE, -ERROR_EXIT_CODE}) {
+            Process process = Mockito.mock(Process.class);
+            when(process.exitValue()).thenReturn(ERROR_EXIT_CODE);
+            ExecutableDifferenceReporter reporter = new ExecutableDifferenceReporter("vim", null, runtime);
+            when(runtime.exec(new String[]{"vim", forApproval(testFile).getAbsolutePath()})).thenReturn(process);
 
-        ExecutableDifferenceReporter reporter = new ExecutableDifferenceReporter("vim", runtime);
-        Mockito.when(runtime.exec()).thenReturn();
-        reporter.approveNew("test content".getBytes(), path.toFile(), testFile.file());
+            boolean approved = reporter.approveNew("test content".getBytes(), forApproval(testFile), testFile.file());
+            Assert.assertThat(approved, CoreMatchers.is(false));
+        }
+    }
+
+    @Test
+    public void shouldReturnTrueIfCommandThatWasExecutedExitedWithNonErrorValue() throws Exception {
+        Process process = Mockito.mock(Process.class);
+        when(process.exitValue()).thenReturn(OK_CODE);
+        ExecutableDifferenceReporter reporter = new ExecutableDifferenceReporter("vim", null, runtime);
+        when(runtime.exec(new String[]{"vim", forApproval(testFile).getAbsolutePath()})).thenReturn(process);
+
+        boolean approved = reporter.approveNew("test content".getBytes(), forApproval(testFile), testFile.file());
+        Assert.assertThat(approved, CoreMatchers.is(true));
+    }
+
+    @Test(expected = AssertionError.class)
+    public void shouldThrowAssertionError_IfThereIsErrorWhileExecutingNotSame() throws Exception {
+        when(runtime.exec(Mockito.any(String[].class))).thenThrow(new IOException("error in exec"));
+        new ExecutableDifferenceReporter("some command", null, runtime).notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(), forApproval(testFile));
+    }
+
+    @Test
+    public void shouldProperlyExecuteNotSameCommand() throws Exception {
+        new ExecutableDifferenceReporter(null, "vimdiff", runtime).notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(), forApproval(testFile));
+
+        verify(runtime).exec(new String[]{"vimdiff", forApproval(testFile).getAbsolutePath(), testFile.file().getAbsolutePath()});
 
     }
 }

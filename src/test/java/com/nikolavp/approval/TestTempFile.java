@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by ontotext on 1/29/14.
+ * Created by nikolavp on 1/29/14.
  */
 public class TestTempFile implements MethodRule {
     private File file;
