@@ -11,7 +11,7 @@
     <properties>
         <github.global.userName>nikolavp</github.global.userName>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdkTarget>1.6</jdkTarget>
+        <jdkTarget>1.7</jdkTarget>
         <coberturaCoverageRate>85</coberturaCoverageRate>
         <guava.version>13.0.1</guava.version>
     </properties>
@@ -160,7 +160,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>2.6</version>
                 <configuration>
                     <check>
                         <branchRate>${coberturaCoverageRate}</branchRate>

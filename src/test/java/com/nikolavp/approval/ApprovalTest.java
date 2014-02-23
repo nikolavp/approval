@@ -3,6 +3,7 @@ package com.nikolavp.approval;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -39,12 +40,15 @@ public class ApprovalTest {
     @Test
     public void shouldCreateFileForApprovalIfNormalFileIsNotLocatedAndNotifyReporter() throws Exception {
         //assign
-
+        File fileForApproval = TestUtils.forApproval(testFile);
         //act
-        new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        try {
+            new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        } catch (AssertionError error) {
+            //This is thrown because we didn't approve the file
+        }
 
         //assert
-        File fileForApproval = TestUtils.forApproval(testFile);
         assertThat(fileForApproval.exists(), is(true));
         assertThat(getFileContent(fileForApproval), equalTo(TestUtils.VALUE.getBytes()));
         verify(reporter).approveNew(TestUtils.VALUE.getBytes(), fileForApproval, testFile.file());
@@ -118,5 +122,14 @@ public class ApprovalTest {
 
         new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
         Mockito.verifyNoMoreInteractions(reporter);
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void shouldThrowAssertionErrorOnNonVerifiedFile() throws Exception {
+        //assign
+        when(reporter.approveNew(any(byte[].class), any(File.class), any(File.class))).thenReturn(false);
+
+        //act
+        new Approval(reporter).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
     }
 }

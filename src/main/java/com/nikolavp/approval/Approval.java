@@ -52,6 +52,8 @@ public class Approval {
                     String errorMessage = String.format("Couldn't move file for approval[%s] to the destination [%s]", approvalPath.toAbsolutePath(), filePath.toAbsolutePath());
                     throw new AssertionError(errorMessage);
                 }
+            } else {
+                throw new AssertionError(String.format("File %s was not approved", approvalPath.toString()));
             }
             return;
         }
