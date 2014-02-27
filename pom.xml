@@ -162,6 +162,14 @@
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
+                    <instrumentation>
+                        <ignores>
+                            <ignore>com.nikolavp.approval.reporters.Reporters</ignore>
+                        </ignores>
+                        <excludes>
+                            <exclude>com/nikolavp/approval/reporters/Reporters.class</exclude>
+                        </excludes>
+                    </instrumentation>
                     <check>
                         <branchRate>${coberturaCoverageRate}</branchRate>
                         <lineRate>${coberturaCoverageRate}</lineRate>

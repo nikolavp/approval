@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 
 /**
  * A reporter that will shell out to an executable that is presented on the user's machine to verify the test output. Note that the approval command and the difference commands can be the same.
@@ -76,9 +75,16 @@ public class ExecutableDifferenceReporter implements Reporter {
         return false;
     }
 
-    private int execute(Process process) throws IOException{
-        copy(process.getInputStream(), System.out);
-        copy(process.getErrorStream(), System.err);
+    private int execute(Process process) throws IOException {
+        InputStream inputStream = process.getInputStream();
+        if (inputStream != null) {
+            copy(inputStream, System.out);
+        }
+
+        InputStream errorStream = process.getErrorStream();
+        if (errorStream != null) {
+            copy(errorStream, System.err);
+        }
         try {
             return process.waitFor();
         } catch (InterruptedException e) {

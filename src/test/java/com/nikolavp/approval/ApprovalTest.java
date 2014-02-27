@@ -3,7 +3,6 @@ package com.nikolavp.approval;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -131,5 +130,15 @@ public class ApprovalTest {
 
         //act
         new Approval(reporter).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void shouldCreateDirectoryAsNeededAndThrowAnExceptionIfItCant() throws Exception {
+        //assign
+        doThrow(new IOException("test exception")).when(fileSystemUtils).createDirectories(Mockito.any(File.class));
+
+        //act
+        new Approval(reporter).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
+
     }
 }
