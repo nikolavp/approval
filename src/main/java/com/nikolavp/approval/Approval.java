@@ -22,7 +22,7 @@ public class Approval {
      * @param reporter a reporter that will be notified as needed for approval events
      */
     public Approval(Reporter reporter) {
-        this(reporter, FileSystemUtils.DEFAULT);
+        this(reporter, new DefaultFileSystemUtils());
     }
 
     /** This ctor is for testing only. */
@@ -38,6 +38,15 @@ public class Approval {
      */
     public void verify(byte[] value, Path filePath) {
         File file = filePath.toFile();
+
+        File parentPathDirectory = file.getParentFile();
+        if (!parentPathDirectory.exists()) {
+            try {
+                fileSystemReadWriter.createDirectories(parentPathDirectory);
+            } catch (IOException e) {
+                throw new AssertionError(e.getMessage());
+            }
+        }
         Path approvalPath = getApprovalPath(file.toPath());
         if (!file.exists()) {
             try {
@@ -52,6 +61,8 @@ public class Approval {
                     String errorMessage = String.format("Couldn't move file for approval[%s] to the destination [%s]", approvalPath.toAbsolutePath(), filePath.toAbsolutePath());
                     throw new AssertionError(errorMessage);
                 }
+            } else {
+                throw new AssertionError(String.format("File %s was not approved", approvalPath.toString()));
             }
             return;
         }

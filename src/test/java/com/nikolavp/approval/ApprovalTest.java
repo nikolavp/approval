@@ -39,12 +39,15 @@ public class ApprovalTest {
     @Test
     public void shouldCreateFileForApprovalIfNormalFileIsNotLocatedAndNotifyReporter() throws Exception {
         //assign
-
+        File fileForApproval = TestUtils.forApproval(testFile);
         //act
-        new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        try {
+            new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        } catch (AssertionError error) {
+            //This is thrown because we didn't approve the file
+        }
 
         //assert
-        File fileForApproval = TestUtils.forApproval(testFile);
         assertThat(fileForApproval.exists(), is(true));
         assertThat(getFileContent(fileForApproval), equalTo(TestUtils.VALUE.getBytes()));
         verify(reporter).approveNew(TestUtils.VALUE.getBytes(), fileForApproval, testFile.file());
@@ -118,5 +121,24 @@ public class ApprovalTest {
 
         new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
         Mockito.verifyNoMoreInteractions(reporter);
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void shouldThrowAssertionErrorOnNonVerifiedFile() throws Exception {
+        //assign
+        when(reporter.approveNew(any(byte[].class), any(File.class), any(File.class))).thenReturn(false);
+
+        //act
+        new Approval(reporter).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void shouldCreateDirectoryAsNeededAndThrowAnExceptionIfItCant() throws Exception {
+        //assign
+        doThrow(new IOException("test exception")).when(fileSystemUtils).createDirectories(Mockito.any(File.class));
+
+        //act
+        new Approval(reporter).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
+
     }
 }
