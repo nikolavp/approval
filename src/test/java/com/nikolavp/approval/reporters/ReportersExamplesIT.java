@@ -20,22 +20,22 @@ public class ReportersExamplesIT {
     @Test
     public void testGvimApprovalProcess() throws Exception {
         Assume.assumeTrue(Desktop.isDesktopSupported());
-        Approval approval = new Approval(Reporters.gvim());
+        Approval<String> approval = Approval.of(String.class).withReporter(Reporters.gvim()).build();
 
-        approval.verify("some test content\n".getBytes(), FileSystems.getDefault().getPath("target", "verifications", "testGvimApprovalProcess.txt"));
+        approval.verify("some test content\n", FileSystems.getDefault().getPath("target", "verifications", "testGvimApprovalProcess.txt"));
     }
 
     @Test
     public void testConsoleApprovalProcess() throws Exception {
         Assume.assumeTrue(Desktop.isDesktopSupported());
-        Approval approval = new Approval(Reporters.console());
-        approval.verify("some test content\n".getBytes(), FileSystems.getDefault().getPath("target", "verifications", "testConsoleApprovalProcess.txt"));
+        Approval<String> approval = Approval.of(String.class).withReporter(Reporters.console()).build();
+        approval.verify("some test content\n", FileSystems.getDefault().getPath("target", "verifications", "testConsoleApprovalProcess.txt"));
     }
 
     @Test
     public void testGeditApprovalProcess() throws Exception {
         Assume.assumeTrue(Desktop.isDesktopSupported());
-        Approval approval = new Approval(Reporters.gedit());
-        approval.verify("some test content\n".getBytes(), FileSystems.getDefault().getPath("target", "verifications", "testGeditApprovalProcess.txt"));
+        Approval<String> approval = Approval.of(String.class).withReporter (Reporters.gedit()).build();
+        approval.verify("some test content\n", FileSystems.getDefault().getPath("target", "verifications", "testGeditApprovalProcess.txt"));
     }
 }

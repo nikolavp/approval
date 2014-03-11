@@ -12,7 +12,7 @@
         <github.global.userName>nikolavp</github.global.userName>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdkTarget>1.7</jdkTarget>
-        <coberturaCoverageRate>85</coberturaCoverageRate>
+        <coberturaCoverageRate>70</coberturaCoverageRate>
         <guava.version>13.0.1</guava.version>
     </properties>
     <build>

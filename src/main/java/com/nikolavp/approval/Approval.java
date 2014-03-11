@@ -1,5 +1,8 @@
 package com.nikolavp.approval;
 
+import com.nikolavp.approval.converters.Converter;
+import com.nikolavp.approval.converters.Converters;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -7,36 +10,76 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 /**
+ * The main entry point class for each approval process. This is the main service class that is doing the hard work - it calls other classes for custom logic based on the object that is approved.
  * Created by nikolavp on 1/29/14.
+ *
+ * @param <T> the type of the object that will be approved by this {@link Approval}
  */
-public class Approval {
+public class Approval<T> {
 
     private static final String FOR_APPROVAL_EXTENSION = ".forapproval";
-
-
     private final Reporter reporter;
     private final FileSystemUtils fileSystemReadWriter;
+    private final Converter<T> converter;
 
     /**
      * Create a new object that will be able to approve "things" for you.
-     * @param reporter a reporter that will be notified as needed for approval events
+     *
+     * @param reporter  a reporter that will be notified as needed for approval events
+     * @param converter a converter that will be responsible for converting the type for approval to raw form
      */
-    public Approval(Reporter reporter) {
-        this(reporter, new DefaultFileSystemUtils());
+    Approval(Reporter reporter, Converter<T> converter) {
+        this(reporter, converter, new DefaultFileSystemUtils());
     }
 
-    /** This ctor is for testing only. */
-    Approval(Reporter reporter, FileSystemUtils fileSystemReadWriter) {
+
+    /**
+     * This ctor is for testing only.
+     */
+    Approval(Reporter reporter, Converter<T> converter, FileSystemUtils fileSystemReadWriter) {
         this.fileSystemReadWriter = fileSystemReadWriter;
+        this.converter = converter;
         this.reporter = reporter;
     }
 
     /**
+     * Create a new approval builder that will be able to approve objects from the specified class type.
+     *
+     * @param clazz the class object for the things you will be approving
+     * @param <T>   the type of the objects you will be approving
+     * @return an approval builder that will be able to construct an {@link Approval} for your objects
+     */
+    public static <T> ApprovalBuilder<T> of(Class<T> clazz) {
+        return new ApprovalBuilder<T>(clazz);
+    }
+
+    /**
+     * Get the path for approval from the original file path.
+     *
+     * @param filePath the original path to value
+     * @return the path for approval
+     */
+    public static Path getApprovalPath(Path filePath) {
+        return FileSystems.getDefault().getPath(filePath.toString() + FOR_APPROVAL_EXTENSION);
+    }
+
+    /* Expose this to the tests */
+    Converter<T> getConverter() {
+        return converter;
+    }
+
+    /* Expose this to the tests */
+    Reporter getReporter() {
+        return reporter;
+    }
+
+    /**
      * Verify the value that was passed in.
-     * @param value the value object to be approved
+     *
+     * @param value    the value object to be approved
      * @param filePath the path where the value will be kept for further approval
      */
-    public void verify(byte[] value, Path filePath) {
+    public void verify(T value, Path filePath) {
         File file = filePath.toFile();
 
         File parentPathDirectory = file.getParentFile();
@@ -48,13 +91,14 @@ public class Approval {
             }
         }
         Path approvalPath = getApprovalPath(file.toPath());
+        byte[] rawValue = converter.getRawForm(value);
         if (!file.exists()) {
             try {
-                fileSystemReadWriter.write(approvalPath, value);
+                fileSystemReadWriter.write(approvalPath, rawValue);
             } catch (IOException e) {
                 throw new AssertionError("Couldn't write file for approval " + approvalPath, e);
             }
-            if (reporter.approveNew(value, approvalPath.toFile(), file)) {
+            if (reporter.approveNew(rawValue, approvalPath.toFile(), file)) {
                 try {
                     fileSystemReadWriter.move(approvalPath, filePath);
                 } catch (IOException e) {
@@ -68,13 +112,13 @@ public class Approval {
         }
         try {
             byte[] fileContent = fileSystemReadWriter.readFully(file.toPath());
-            if (!Arrays.equals(fileContent, value)) {
+            if (!Arrays.equals(fileContent, rawValue)) {
                 try {
-                    fileSystemReadWriter.write(approvalPath, value);
+                    fileSystemReadWriter.write(approvalPath, rawValue);
                 } catch (IOException e) {
                     throw new AssertionError("Couldn't write the new approval file " + file, e);
                 }
-                reporter.notTheSame(fileContent, file, value, approvalPath.toFile());
+                reporter.notTheSame(fileContent, file, rawValue, approvalPath.toFile());
             }
         } catch (IOException e) {
             throw new AssertionError("Couldn't read the previous content in file " + file, e);
@@ -84,12 +128,53 @@ public class Approval {
     }
 
     /**
-     * Get the path for approval from the original file path.
-     * @param filePath the original path to value
-     * @return the path for approval
+     * A builder class for approvals. This is used to conveniently build new approvals for a specific type with custom reporters, converters, etc.
+     *
+     * @param <T> the type that will be approved by the the resulting approval object
      */
-    public static Path getApprovalPath(Path filePath) {
-        return FileSystems.getDefault().getPath(filePath.toString() + FOR_APPROVAL_EXTENSION);
-    }
+    public static final class ApprovalBuilder<T> {
 
+        private Converter<T> converter;
+        private Reporter reporter;
+
+        private ApprovalBuilder(Class<T> clazz) {
+            if (clazz.equals(Byte.class) || clazz.equals(byte.class)) {
+                this.converter = (Converter<T>) Converters.BYTE;
+            } else if (clazz.equals(Integer.class) || clazz.equals(int.class)) {
+                this.converter = (Converter<T>) Converters.INTEGER;
+            } else if (clazz.equals(String.class)) {
+                this.converter = (Converter<T>) Converters.STRING;
+            }
+        }
+
+        /**
+         * Set the converter that will be used when building new approvals with this builder.
+         * @see Converter
+         * @param converterToBeUsed the converter that will be used from the approval that will be built
+         * @return the same builder for chaining
+         */
+        public ApprovalBuilder<T> withConveter(Converter<T> converterToBeUsed) {
+            this.converter = converterToBeUsed;
+            return this;
+        }
+
+        /**
+         * Set the reporter that will be used when building new approvals with this builder.
+         * @see Reporter
+         * @param reporterToBeUsed the reporter that will be used from the approval that will be built
+         * @return the same builder for chaninig
+         */
+        public ApprovalBuilder<T> withReporter(Reporter reporterToBeUsed) {
+            this.reporter = reporterToBeUsed;
+            return this;
+        }
+
+        /**
+         * Creates a new approval with configuration/options(reporters, converters, etc) that were set for this builder.
+         * @return a new approval for the specified type with custom configuration if any
+         */
+        public Approval<T> build() {
+            return new Approval<T>(reporter, converter);
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package com.nikolavp.approval;
 
+import com.nikolavp.approval.converters.Converter;
+import com.nikolavp.approval.converters.DefaultConverter;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +44,7 @@ public class ApprovalTest {
         File fileForApproval = TestUtils.forApproval(testFile);
         //act
         try {
-            new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+            new Approval<>(reporter, new DefaultConverter()).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
         } catch (AssertionError error) {
             //This is thrown because we didn't approve the file
         }
@@ -57,7 +59,7 @@ public class ApprovalTest {
     @Test(expected = AssertionError.class)
     public void shouldThrowAssertionError_IfCannotWriteNewApprovalFile() throws Exception {
         doThrow(new IOException("test error")).when(fileSystemUtils).write(any(Path.class), any(byte[].class));
-        new Approval(reporter, fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        new Approval<>(reporter, new DefaultConverter(), fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
     }
 
     @Test(expected = AssertionError.class)
@@ -66,7 +68,7 @@ public class ApprovalTest {
         doThrow(new IOException("test error moving")).when(fileSystemUtils).move(any(Path.class), any(Path.class));
         when(reporter.approveNew(any(byte[].class), any(File.class), any(File.class))).thenReturn(true);
 
-        new Approval(reporter, fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        new Approval<>(reporter, new DefaultConverter(), fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
     }
 
     @Test(expected = AssertionError.class)
@@ -74,7 +76,7 @@ public class ApprovalTest {
         //arrange
         when(fileSystemUtils.readFully(any(Path.class))).thenThrow(new IOException("read test exception"));
         testFile.file().createNewFile();
-        new Approval(reporter, fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        new Approval<>(reporter, new DefaultConverter(), fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
 
 
     }
@@ -85,7 +87,7 @@ public class ApprovalTest {
         testFile.file().createNewFile();
 
         doThrow(new IOException("cannot create approval file")).when(fileSystemUtils).write(TestUtils.forApproval(testFile).toPath(), TestUtils.VALUE.getBytes());
-        new Approval(reporter, fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        new Approval<>(reporter, new DefaultConverter(), fileSystemUtils).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
     }
 
     @Test
@@ -94,7 +96,7 @@ public class ApprovalTest {
         when(reporter.approveNew(Mockito.any(byte[].class), any(File.class), Mockito.any(File.class))).thenReturn(true);
 
         //act
-        new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        new Approval<>(reporter, new DefaultConverter()).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
 
         //assert
         assertThat(testFile.file().exists(), is(true));
@@ -110,7 +112,7 @@ public class ApprovalTest {
         String valueWithDifference = TestUtils.VALUE + "difference";
         Files.write(testFile.file().toPath(), valueWithDifference.getBytes());
 
-        new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        new Approval<>(reporter, new DefaultConverter()).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
         verify(reporter).notTheSame(valueWithDifference.getBytes(), testFile.file(), TestUtils.VALUE.getBytes(), TestUtils.forApproval(testFile));
         Mockito.verifyNoMoreInteractions(reporter);
     }
@@ -119,7 +121,7 @@ public class ApprovalTest {
     public void shouldNotCallTheReporterIfAnOldFileAndIsTheSame() throws Exception{
         Files.write(testFile.file().toPath(), TestUtils.VALUE.getBytes());
 
-        new Approval(reporter).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
+        new Approval<>(reporter, new DefaultConverter()).verify(TestUtils.VALUE.getBytes(), testFile.file().toPath());
         Mockito.verifyNoMoreInteractions(reporter);
     }
     
@@ -129,7 +131,7 @@ public class ApprovalTest {
         when(reporter.approveNew(any(byte[].class), any(File.class), any(File.class))).thenReturn(false);
 
         //act
-        new Approval(reporter).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
+        new Approval<>(reporter, new DefaultConverter()).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
     }
     
     @Test(expected = AssertionError.class)
@@ -138,7 +140,24 @@ public class ApprovalTest {
         doThrow(new IOException("test exception")).when(fileSystemUtils).createDirectories(Mockito.any(File.class));
 
         //act
-        new Approval(reporter).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
+        new Approval<>(reporter, new DefaultConverter()).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
 
+    }
+
+    @Test
+    public void shouldBeAbleToApproveCustomTypes() throws Exception {
+        //assign
+        Converter<Entity> converter = Mockito.mock(Converter.class);
+        Entity testEntity = new Entity("test", 10);
+        byte[] rawBytes = "test".getBytes();
+        when(converter.getRawForm(testEntity)).thenReturn(rawBytes);
+        File fileForApproval = TestUtils.forApproval(testFile);
+        when(reporter.approveNew(rawBytes, fileForApproval, testFile.file())).thenReturn(true);
+
+        //act
+        new Approval<>(reporter, converter, fileSystemUtils).verify(testEntity, testFile.file().toPath());
+
+        //assert
+        verify(fileSystemUtils).write(fileForApproval.toPath(), rawBytes);
     }
 }
