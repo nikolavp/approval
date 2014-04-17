@@ -5,22 +5,19 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
- * User: nikolavp
- * Date: 28/02/14
- * Time: 17:47
+ * User: nikolavp (Nikola Petrov)
+ * Date: 07/04/14
+ * Time: 10:49
  */
-public class ListConverterTest {
+public class ArrayConverterTest {
     @Test
     public void shouldBeComposableWithAnotherConverter() throws Exception {
         //assign
         Converter<String> other = Mockito.mock(Converter.class);
         Mockito.when(other.getRawForm(Mockito.anyString())).thenReturn("test".getBytes());
-        ListConverter<String> listConverter = new ListConverter<>(other);
-        List<String> strings = Arrays.asList("test", "foo", "bar");
+        ArrayConverter<String> listConverter = new ArrayConverter<>(other);
+        String[] strings = new String[]{"test", "foo", "bar"};
 
         //act
         byte[] rawForm = listConverter.getRawForm(strings);

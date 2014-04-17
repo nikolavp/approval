@@ -63,6 +63,48 @@ public class Approval<T> {
         return FileSystems.getDefault().getPath(filePath.toString() + FOR_APPROVAL_EXTENSION);
     }
 
+    @SuppressWarnings("unchecked")
+    private static <T> Converter<T> getConverterForPrimitive(Class<T> clazz) {
+        if (clazz.equals(Byte.class) || clazz.equals(byte.class)) {
+            return (Converter<T>) Converters.BYTE;
+        } else if (clazz.equals(Integer.class) || clazz.equals(int.class)) {
+            return (Converter<T>) Converters.INTEGER;
+        } else if (clazz.equals(String.class)) {
+            return (Converter<T>) Converters.STRING;
+        } else if (clazz.equals(Short.class) || clazz.equals(short.class)) {
+            return (Converter<T>) Converters.SHORT;
+        } else if (clazz.equals(Long.class) || clazz.equals(long.class)) {
+            return (Converter<T>) Converters.LONG;
+        } else if (clazz.equals(Boolean.class) || clazz.equals(boolean.class)) {
+            return (Converter<T>) Converters.BOOLEAN;
+        } else if (clazz.equals(Float.class) || clazz.equals(float.class)) {
+            return (Converter<T>) Converters.FLOAT;
+        } else if (clazz.equals(Double.class) || clazz.equals(double.class)) {
+            return (Converter<T>) Converters.DOUBLE;
+        } else if (clazz.equals(Character.class) || clazz.equals(char.class)) {
+            return (Converter<T>) Converters.CHAR;
+        } else if (clazz.equals(byte[].class)) {
+            return (Converter<T>) Converters.BYTE_ARRAY;
+        } else if (clazz.equals(int[].class)) {
+            return (Converter<T>) Converters.INTEGER_ARRAY;
+        } else if (clazz.equals(short[].class)) {
+            return (Converter<T>) Converters.SHORT_ARRAY;
+        } else if (clazz.equals(long[].class)) {
+            return (Converter<T>) Converters.LONG_ARRAY;
+        } else if (clazz.equals(float[].class)) {
+            return (Converter<T>) Converters.FLOAT_ARRAY;
+        } else if (clazz.equals(double[].class)) {
+            return (Converter<T>) Converters.DOUBLE_ARRAY;
+        } else if (clazz.equals(boolean[].class)) {
+            return (Converter<T>) Converters.BOOLEAN_ARRAY;
+        } else if (clazz.equals(char[].class)) {
+            return (Converter<T>) Converters.CHAR_ARRAY;
+        } else if (clazz.equals(String[].class)) {
+            return (Converter<T>) Converters.STRING_ARRAY;
+        }
+        throw new IllegalArgumentException(clazz + " is not a primitive type class!");
+    }
+
     /* Expose this to the tests */
     Converter<T> getConverter() {
         return converter;
@@ -134,24 +176,20 @@ public class Approval<T> {
      */
     public static final class ApprovalBuilder<T> {
 
+        private final Class<T> clazz;
         private Converter<T> converter;
         private Reporter reporter;
 
         private ApprovalBuilder(Class<T> clazz) {
-            if (clazz.equals(Byte.class) || clazz.equals(byte.class)) {
-                this.converter = (Converter<T>) Converters.BYTE;
-            } else if (clazz.equals(Integer.class) || clazz.equals(int.class)) {
-                this.converter = (Converter<T>) Converters.INTEGER;
-            } else if (clazz.equals(String.class)) {
-                this.converter = (Converter<T>) Converters.STRING;
-            }
+            this.clazz = clazz;
         }
 
         /**
          * Set the converter that will be used when building new approvals with this builder.
-         * @see Converter
+         *
          * @param converterToBeUsed the converter that will be used from the approval that will be built
          * @return the same builder for chaining
+         * @see Converter
          */
         public ApprovalBuilder<T> withConveter(Converter<T> converterToBeUsed) {
             this.converter = converterToBeUsed;
@@ -159,22 +197,35 @@ public class Approval<T> {
         }
 
         /**
+         * Creates a new approval with configuration/options(reporters, converters, etc) that were set for this builder.
+         *
+         * @return a new approval for the specified type with custom configuration if any
+         */
+        public Approval<T> build() {
+            if (converter == null) {
+                try {
+                    converter = getConverterForPrimitive(clazz);
+                } catch (IllegalArgumentException ex) {
+                    throw new IllegalStateException(String.format("You didn't provide a converter for %s and it is not a primitive type!", clazz));
+                }
+            }
+            if (reporter == null) {
+                throw new IllegalStateException("You didn't provide a reporter!");
+            }
+            return new Approval<T>(reporter, converter);
+        }
+
+        /**
          * Set the reporter that will be used when building new approvals with this builder.
-         * @see Reporter
+         *
          * @param reporterToBeUsed the reporter that will be used from the approval that will be built
          * @return the same builder for chaninig
+         * @see Reporter
          */
         public ApprovalBuilder<T> withReporter(Reporter reporterToBeUsed) {
             this.reporter = reporterToBeUsed;
             return this;
         }
 
-        /**
-         * Creates a new approval with configuration/options(reporters, converters, etc) that were set for this builder.
-         * @return a new approval for the specified type with custom configuration if any
-         */
-        public Approval<T> build() {
-            return new Approval<T>(reporter, converter);
-        }
     }
 }
