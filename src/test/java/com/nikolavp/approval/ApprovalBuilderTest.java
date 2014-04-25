@@ -58,20 +58,32 @@ public class ApprovalBuilderTest {
         assertThat(build(primitive).getConverter(), CoreMatchers.sameInstance(converter));
     }
 
-    private static <T> Approval<T> build(Class<T> byteClass) {
-        return Approval.of(byteClass).withReporter(Reporters.gvim()).build();
+    private static <T> Approval<T> build(Class<T> clazz) {
+        return Approval.of(clazz).withReporter(Reporters.gvim()).build();
     }
 
     private static <T>  void verifyArrayConverter(Class<T> clazz, Converter<T> converter) {
         assertThat(build(clazz).getConverter(), CoreMatchers.sameInstance(converter));
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void shouldntAllowApprovalBuildingWithoutConverterSet() throws Exception {
         //assign
-
+        final Approval<Entity> build = build(Entity.class);
         //act
 
         //assert
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void shouldThrowAnExceptionIfNoReporterWasSet() throws Exception {
+        Approval.of(int[].class).build();
+    }
+
+    @Test
+    public void shouldProperlySetReporterOnBuilder() throws Exception {
+        assertThat(build(short[].class).getReporter(), CoreMatchers.equalTo(Reporters.gvim()));
+    }
+
+
 }

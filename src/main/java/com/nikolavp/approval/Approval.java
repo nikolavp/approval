@@ -129,7 +129,7 @@ public class Approval<T> {
             try {
                 fileSystemReadWriter.createDirectories(parentPathDirectory);
             } catch (IOException e) {
-                throw new AssertionError(e.getMessage());
+                throw new IllegalStateException(e.getMessage(), e);
             }
         }
         Path approvalPath = getApprovalPath(file.toPath());

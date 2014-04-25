@@ -17,7 +17,7 @@ public class SimpleExampleApprovalTest {
     public void shouldReturnSomethingToTestOut() throws Exception {
         //assign
         Approval<String> approver = Approval.of(String.class)
-                .withReporter(Reporters.gvim())
+                .withReporter(Reporters.console())
                 .build();
         String title = "myTitle";
 

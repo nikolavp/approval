@@ -1,6 +1,7 @@
 package com.nikolavp.approval;
 
 import com.nikolavp.approval.converters.Converter;
+import com.nikolavp.approval.converters.Converters;
 import com.nikolavp.approval.converters.DefaultConverter;
 import org.junit.Rule;
 import org.junit.Test;
@@ -134,16 +135,6 @@ public class ApprovalTest {
         new Approval<>(reporter, new DefaultConverter()).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
     }
     
-    @Test(expected = AssertionError.class)
-    public void shouldCreateDirectoryAsNeededAndThrowAnExceptionIfItCant() throws Exception {
-        //assign
-        doThrow(new IOException("test exception")).when(fileSystemUtils).createDirectories(Mockito.any(File.class));
-
-        //act
-        new Approval<>(reporter, new DefaultConverter()).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
-
-    }
-
     @Test
     public void shouldBeAbleToApproveCustomTypes() throws Exception {
         //assign
@@ -160,4 +151,20 @@ public class ApprovalTest {
         //assert
         verify(fileSystemUtils).write(fileForApproval.toPath(), rawBytes);
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void shouldCreateParentDirectoryForPathIfItDoesntExistAndThrowExceptionOnErrors() throws Exception {
+        //assign
+        final File testFileInTemporaryDir = new File(testFile.file(), "test.txt");
+        when(reporter.approveNew(any(byte[].class), any(File.class), any(File.class))).thenReturn(true);
+        doThrow(new IOException("test exception")).when(fileSystemUtils).createDirectories(Mockito.any(File.class));
+
+        //act
+        new Approval<>(reporter, Converters.BOOLEAN, fileSystemUtils).verify(true, testFileInTemporaryDir.toPath());
+
+        //assert
+        verify(fileSystemUtils).createDirectories(testFile.file());
+    }
+
+
 }

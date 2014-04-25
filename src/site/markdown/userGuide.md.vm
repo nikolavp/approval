@@ -1,0 +1,20 @@
+Let's try to test the simplest example possible:
+
+#set( $snippetFile = "/src/test/java/com/nikolavp/approval/example/SimpleExample.java" )
+#set( $snippetName = "" )
+#parse( "snippet" )
+
+now this class is not rocket science and if we want to test getResult(), we would something like the following in JUnit:
+
+#set( $snippetFile = "/src/test/java/com/nikolavp/approval/example/SimpleExampleTest.java" )
+#set( $snippetName = "" )
+#parse( "snippet" )
+
+this is quite terse and short. Can we do better? Actually approval is not any shorter:
+
+
+#set( $snippetFile = "/src/test/java/com/nikolavp/approval/example/SimpleExampleApprovalTest.java" )
+#set( $snippetName = "" )
+#parse( "snippet" )
+
+this is not the best example
