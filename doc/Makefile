@@ -49,6 +49,9 @@ help:
 clean:
 	rm -rf $(BUILDDIR)/*
 
+javadoc:
+	javasphinx-apidoc -f -o source/javadoc ../src/main/java/
+
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo

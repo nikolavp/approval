@@ -16,3 +16,4 @@ so you can prevent problems **in your production environment.**
    getting-started
    manual/index
    about/index
+   javadoc/packages

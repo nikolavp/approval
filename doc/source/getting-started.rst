@@ -84,9 +84,9 @@ note how this is different from :ref:`gs-approvals` - we are building a custom `
 
 Reporter class
 ==============
-Reporters(in lack of better name) are used to prompt the user for approving the result that was given to the ``Approval`` object. There is a ``withReporter`` method on ``Approval`` that allows you to use a custom reporter. We provide some ready to use reporters in the ``Reporters`` class:
+Reporters(in lack of better name) are used to prompt the user for approving the result that was given to the :java:ref:`Approval` object. There is a :java:ref:`withReporter` method on :java:ref:`ApprovalBuilder` that allows you to use a custom reporter. We provide some ready to use reporters in the ``Reporters`` class:
 
-* console - this uses :program:`cat` and :program:`diff` to report the first result or the differences on the console
-* gvim - this uses :program:`gvim` and :program:`gvimdiff` to report the first result or the differences in gvim(our favourite editor)
-* gedit - this uses :program:`gedit` to report the first result. Sadly on differences it just opens two tabs :(
+* :java:ref:`console` - this uses :program:`cat` and :program:`diff` to report the first result or the differences on the console
+* :java:ref:`gvim` - this uses :program:`gvim` and :program:`gvimdiff` to report the first result or the differences in gvim(our favourite editor)
+* :java:ref:`gedit` - this uses :program:`gedit` to report the first result. Sadly on differences it just opens two tabs :(
 
