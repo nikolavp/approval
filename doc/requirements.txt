@@ -1,0 +1,2 @@
+javasphinx==0.9.11
+sphinx-rtd-theme==0.1.6
