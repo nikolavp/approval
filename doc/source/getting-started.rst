@@ -90,3 +90,10 @@ Reporters(in lack of better name) are used to prompt the user for approving the 
 * :java:ref:`gvim` - this uses :program:`gvim` and :program:`gvimdiff` to report the first result or the differences in gvim(our favourite editor)
 * :java:ref:`gedit` - this uses :program:`gedit` to report the first result. Sadly on differences it just opens two tabs :(
 
+
+.. _gs-limitations:
+Limitations
+===========
+Some things that you have to keep in mind when using the library:
+
+* unordered objects like *HashSet*, *HashMap* cannot be determisticly verified because their representation will vary from run to run.
