@@ -6,6 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = build
+JAVADOC_FORCE = 0
 
 # User-friendly check for sphinx-build
 ifeq ($(shell which $(SPHINXBUILD) >/dev/null 2>&1; echo $$?), 1)
@@ -49,11 +50,8 @@ help:
 clean:
 	rm -rf $(BUILDDIR)/*
 
-javadoc:
-	javasphinx-apidoc -f -o source/javadoc ../src/main/java/
-
 html:
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	JAVADOC_FORCE=$(JAVADOC_FORCE) $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
