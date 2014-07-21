@@ -7,5 +7,6 @@ com.nikolavp.approval.reporters
    :maxdepth: 1
 
    ExecutableDifferenceReporter
+   FirstWorkingReporter
    Reporters
 

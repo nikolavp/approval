@@ -4,21 +4,18 @@ import com.nikolavp.approval.TestTempFile;
 import com.nikolavp.approval.TestUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import static com.nikolavp.approval.TestUtils.RAW_VALUE;
 import static com.nikolavp.approval.TestUtils.forApproval;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by nikolavp on 2/2/14.
@@ -30,14 +27,18 @@ public class ExecutableDifferenceReporterTest {
     public static final int OK_CODE = 0;
     @Rule
     public TestTempFile testFile = new TestTempFile();
+    private ExecutableDifferenceReporter executableDifferenceReporter;
 
-    @Mock
-    Runtime runtime;
+    @Before
+    public void setupMocks() {
+        executableDifferenceReporter = Mockito.spy(new ExecutableDifferenceReporter("gvim", "gvimdiff"));
+    }
 
     @Test(expected = AssertionError.class)
     public void shouldThrowAssertionError_IfThereIsErrorWhileExecuting() throws Exception {
-        when(runtime.exec(Mockito.any(String.class))).thenThrow(new IOException("error in exec"));
-        new ExecutableDifferenceReporter("some command", null, runtime).approveNew(RAW_VALUE, forApproval(testFile), testFile.file());
+        doThrow(new IOException("error in exec")).when(executableDifferenceReporter).startProcess(Mockito.<String>anyVararg());
+
+        executableDifferenceReporter.approveNew(RAW_VALUE, forApproval(testFile), testFile.file());
     }
 
     @Test
@@ -45,10 +46,9 @@ public class ExecutableDifferenceReporterTest {
         for(int exitCode : new int[] {ERROR_EXIT_CODE, -ERROR_EXIT_CODE}) {
             Process process = Mockito.mock(Process.class);
             when(process.waitFor()).thenReturn(exitCode);
-            ExecutableDifferenceReporter reporter = new ExecutableDifferenceReporter("gvim", null, runtime);
-            when(runtime.exec("gvim " + forApproval(testFile).getAbsolutePath())).thenReturn(process);
+            doReturn(process).when(executableDifferenceReporter).startProcess("gvim", forApproval(testFile).getAbsolutePath());
 
-            boolean approved = reporter.approveNew("test content".getBytes(), forApproval(testFile), testFile.file());
+            boolean approved = executableDifferenceReporter.approveNew("test content".getBytes(), forApproval(testFile), testFile.file());
             Assert.assertThat(approved, CoreMatchers.is(false));
         }
     }
@@ -59,55 +59,35 @@ public class ExecutableDifferenceReporterTest {
         Process process = Mockito.mock(Process.class);
         when(process.waitFor()).thenThrow(new InterruptedException("test exception"));
 
-        when(runtime.exec("vim " + forApproval(testFile).getAbsolutePath())).thenReturn(process);
+        doReturn(process).when(executableDifferenceReporter).startProcess("gvim", forApproval(testFile).getAbsolutePath());
 
         //act
-        new ExecutableDifferenceReporter("vim", null, runtime).approveNew(RAW_VALUE, forApproval(testFile), testFile.file());
+        executableDifferenceReporter.approveNew(RAW_VALUE, forApproval(testFile), testFile.file());
     }
 
     @Test
     public void shouldReturnTrueIfCommandThatWasExecutedExitedWithNonErrorValue() throws Exception {
         Process process = Mockito.mock(Process.class);
         when(process.exitValue()).thenReturn(OK_CODE);
-        ExecutableDifferenceReporter reporter = new ExecutableDifferenceReporter("gvim", null, runtime);
-        when(runtime.exec("gvim " + forApproval(testFile).getAbsolutePath())).thenReturn(process);
+        doReturn(process).when(executableDifferenceReporter).startProcess("gvim", forApproval(testFile).getAbsolutePath());
 
-        boolean approved = reporter.approveNew("test content".getBytes(), forApproval(testFile), testFile.file());
+        boolean approved = executableDifferenceReporter.approveNew("test content".getBytes(), forApproval(testFile), testFile.file());
         Assert.assertThat(approved, CoreMatchers.is(true));
     }
 
     @Test(expected = AssertionError.class)
     public void shouldThrowAssertionError_IfThereIsErrorWhileExecutingNotSame() throws Exception {
-        when(runtime.exec(Mockito.any(String.class))).thenThrow(new IOException("error in exec"));
-        new ExecutableDifferenceReporter("some command", null, runtime).notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(), forApproval(testFile));
+        doThrow(new IOException("error in exec")).when(executableDifferenceReporter).startProcess(Mockito.<String>anyVararg());
+        executableDifferenceReporter.notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(), forApproval(testFile));
     }
 
     @Test
     public void shouldProperlyExecuteNotSameCommand() throws Exception {
         Process process = Mockito.mock(Process.class);
         when(process.exitValue()).thenReturn(OK_CODE);
-        when(runtime.exec(anyString())).thenReturn(process);
-        new ExecutableDifferenceReporter(null, "vimdiff", runtime).notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(), forApproval(testFile));
+        doReturn(process).when(executableDifferenceReporter).startProcess(Mockito.<String>anyVararg());
+        executableDifferenceReporter.notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(), forApproval(testFile));
 
-        verify(runtime).exec("vimdiff " + forApproval(testFile).getAbsolutePath() + " " + testFile.file().getAbsolutePath());
-    }
-
-    @Test
-    public void shouldCopyStreamsFrom_ProcessToSystem_OutAndError() throws Exception {
-        //assign
-        Process process = Mockito.mock(Process.class);
-        when(process.exitValue()).thenReturn(OK_CODE);
-        InputStream outputStream = Mockito.mock(InputStream.class);
-        when(process.getInputStream()).thenReturn(outputStream);
-        InputStream errorStream = Mockito.mock(InputStream.class);
-        when(process.getErrorStream()).thenReturn(errorStream);
-        when(runtime.exec(anyString())).thenReturn(process);
-
-        //act
-        new ExecutableDifferenceReporter(null, "vimdiff", runtime).notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(), forApproval(testFile));
-
-        //assert
-        verify(outputStream).read(Mockito.any(byte[].class));
-        verify(errorStream).read(Mockito.any(byte[].class));
+        verify(executableDifferenceReporter).startProcess("gvimdiff", forApproval(testFile).getAbsolutePath(), testFile.file().getAbsolutePath());
     }
 }

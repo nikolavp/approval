@@ -22,6 +22,17 @@ console
 
    :return: a reporter that uses console unix tools under the hood
 
+firstWorking
+^^^^^^^^^^^^
+
+.. java:method:: public static Reporter firstWorking(Reporter... others)
+   :outertype: Reporters
+
+   Get a reporter that will use the first working reporter as per \ :java:ref:`com.nikolavp.approval.Reporter.canApprove`\  for the reporting.
+
+   :param others: an array/list of reporters that will be used
+   :return: the newly created composite reporter
+
 gedit
 ^^^^^
 
