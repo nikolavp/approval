@@ -17,6 +17,9 @@ Setting Up Maven
 Just add the ``approval`` library as a dependency:
 
 .. code-block:: xml
+.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/EntityConverterExample.java
+    :language: java
+    :lines: 12-20
 
     <dependencies>
         <dependency>
@@ -89,6 +92,33 @@ Reporters(in lack of better name) are used to prompt the user for approving the 
 * :java:ref:`console` - this uses :program:`cat` and :program:`diff` to report the first result or the differences on the console
 * :java:ref:`gvim` - this uses :program:`gvim` and :program:`gvimdiff` to report the first result or the differences in gvim(our favourite editor)
 * :java:ref:`gedit` - this uses :program:`gedit` to report the first result. Sadly on differences it just opens two tabs :(
+
+.. _gs-converter:
+
+Converter
+=========
+Converters are objects that are responsible for serializing objects to raw form(currently byte[]). This interface allows you to create a custom converter for your custom objects and reuse the approval process in the library. We ship have converters for all primitive types, String and their array variants. Of course providing a converter for your custom object is dead easy. Let's say you have a custom entity model class that you are going to use for verifications in your tests:
+
+.. literalinclude:: /../../src/test/java/com/nikolavp/approval/Entity.java
+    :language: java
+
+Here is a possible simple converter for the class:
+
+.. literalinclude:: /../../src/test/java/com/nikolavp/approval/EntityConverter.java
+    :language: java
+
+
+now let's say we execute a simple test
+
+.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/EntityConverterExample.java
+    :language: java
+    :lines: 12-20
+
+we will get the following output in the console(because we are using the console reporter)
+
+    | Entity is:
+    | age = 30
+    | name = Nikola
 
 
 .. _gs-limitations:
