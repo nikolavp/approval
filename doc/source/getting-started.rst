@@ -17,9 +17,6 @@ Setting Up Maven
 Just add the ``approval`` library as a dependency:
 
 .. code-block:: xml
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/EntityConverterExample.java
-    :language: java
-    :lines: 12-20
 
     <dependencies>
         <dependency>
@@ -97,7 +94,7 @@ Reporters(in lack of better name) are used to prompt the user for approving the 
 
 Converter
 =========
-Converters are objects that are responsible for serializing objects to raw form(currently byte[]). This interface allows you to create a custom converter for your custom objects and reuse the approval process in the library. We ship have converters for all primitive types, String and their array variants. Of course providing a converter for your custom object is dead easy. Let's say you have a custom entity model class that you are going to use for verifications in your tests:
+Converters are objects that are responsible for serializing objects to raw form(currently byte[]). This interface allows you to create a custom converter for your custom objects and reuse the approval process in the library. We have converters for all primitive types, String and their array variants. Of course providing a converter for your custom object is dead easy. Let's say you have a custom entity model class that you are going to use for verifications in your tests:
 
 .. literalinclude:: /../../src/test/java/com/nikolavp/approval/Entity.java
     :language: java
@@ -122,6 +119,7 @@ we will get the following output in the console(because we are using the console
 
 
 .. _gs-limitations:
+
 Limitations
 ===========
 Some things that you have to keep in mind when using the library:
