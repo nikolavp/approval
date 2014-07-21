@@ -4,10 +4,6 @@
 
 .. java:import:: java.io IOException
 
-.. java:import:: java.io InputStream
-
-.. java:import:: java.io OutputStream
-
 ExecutableDifferenceReporter
 ============================
 
@@ -36,12 +32,6 @@ ExecutableDifferenceReporter
    :param approvalCommand: the approval command
    :param diffCommand: the difference command
 
-ExecutableDifferenceReporter
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:constructor::  ExecutableDifferenceReporter(String approvalCommand, String diffCommand, Runtime runtime)
-   :outertype: ExecutableDifferenceReporter
-
 Methods
 -------
 approveNew
@@ -50,9 +40,21 @@ approveNew
 .. java:method:: @Override public boolean approveNew(byte[] value, File approvalDestination, File fileForVerification)
    :outertype: ExecutableDifferenceReporter
 
+canApprove
+^^^^^^^^^^
+
+.. java:method:: @Override public boolean canApprove(File fileForApproval)
+   :outertype: ExecutableDifferenceReporter
+
 notTheSame
 ^^^^^^^^^^
 
 .. java:method:: @Override public void notTheSame(byte[] oldValue, File fileForVerification, byte[] newValue, File fileForApproval)
+   :outertype: ExecutableDifferenceReporter
+
+startProcess
+^^^^^^^^^^^^
+
+.. java:method::  Process startProcess(String... cmdParts) throws IOException
    :outertype: ExecutableDifferenceReporter
 

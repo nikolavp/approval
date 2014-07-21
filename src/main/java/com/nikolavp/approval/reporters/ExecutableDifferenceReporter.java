@@ -50,6 +50,11 @@ public class ExecutableDifferenceReporter implements Reporter {
         return false;
     }
 
+    @Override
+    public boolean canApprove(File fileForApproval) {
+        return true;
+    }
+
     private int execute(String... cmdParts) throws IOException {
         final Process process = startProcess(cmdParts);
         try {

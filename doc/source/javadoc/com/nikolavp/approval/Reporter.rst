@@ -25,6 +25,17 @@ approveNew
    :param fileForVerification: the file for the this new approval value @return true if the new value is approved and false otherwise
    :return: true if the value was approved and false otherwise
 
+canApprove
+^^^^^^^^^^
+
+.. java:method::  boolean canApprove(File fileForApproval)
+   :outertype: Reporter
+
+   A method to check if this reporter is supported for the following file type or environment! Reporters are different for different platforms and file types and this in conjuction with \ :java:ref:`com.nikolavp.approval.reporters.Reporters.firstWorking`\  will allow you to plug different reporters for different environments(CI, Windows, Linux, MacOS, etc).
+
+   :param fileForApproval: the file that we want to approve
+   :return: true if we can approve the file and false otherwise
+
 notTheSame
 ^^^^^^^^^^
 

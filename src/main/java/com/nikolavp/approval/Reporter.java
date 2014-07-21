@@ -25,4 +25,15 @@ public interface Reporter {
      * @return true if the value was approved and false otherwise
      */
     boolean approveNew(byte[] value, File fileForApproval, File fileForVerification);
+
+    /**
+     * A method to check if this reporter is supported for the following file type or environment! Reporters are
+     * different for different platforms and file types and this in conjuction with {@link
+     * com.nikolavp.approval.reporters.Reporters#firstWorking} will allow you to plug different reporters for different
+     * environments(CI, Windows, Linux, MacOS, etc).
+     *
+     * @param fileForApproval the file that we want to approve
+     * @return true if we can approve the file and false otherwise
+     */
+    boolean canApprove(File fileForApproval);
 }

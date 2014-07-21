@@ -50,4 +50,15 @@ public final class Reporters {
     public static Reporter gedit() {
         return GEDIT;
     }
+
+    /**
+     * Get a reporter that will use the first working reporter as per {@link com.nikolavp.approval.Reporter#canApprove}
+     * for the reporting.
+     *
+     * @param others an array/list of reporters that will be used
+     * @return the newly created composite reporter
+     */
+    public static Reporter firstWorking(Reporter... others) {
+        return new FirstWorkingReporter(others);
+    }
 }
