@@ -1,11 +1,5 @@
 package com.nikolavp.approval;
 
-/**
- * Just an example entity to test different converters and generics API safety.
- * User: nikolavp
- * Date: 28/02/14
- * Time: 14:46
- */
 public class Entity {
 
     private String name;
