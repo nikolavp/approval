@@ -5,7 +5,8 @@ import com.nikolavp.approval.Reporter;
 import java.io.File;
 
 /**
- * A reporter that will compose other reportes and use the first one that can approve the objects for verification as per {@link com.nikolavp.approval.Reporter#canApprove(java.io.File)}.
+ * A reporter that will compose other reporters and use the first one that can approve the objects for verification as
+ * per {@link com.nikolavp.approval.Reporter#canApprove(java.io.File)}.
  */
 class FirstWorkingReporter implements Reporter {
     private final Reporter[] others;
