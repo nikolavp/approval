@@ -128,7 +128,7 @@ public class Approval<T> {
         File file = mapFilePath(value, filePath);
 
         File parentPathDirectory = file.getParentFile();
-        if (!parentPathDirectory.exists()) {
+        if (parentPathDirectory != null && !parentPathDirectory.exists()) {
             try {
                 fileSystemReadWriter.createDirectories(parentPathDirectory);
             } catch (IOException e) {
@@ -138,7 +138,7 @@ public class Approval<T> {
         Path approvalPath = getApprovalPath(file.toPath());
         byte[] rawValue = converter.getRawForm(value);
         if (!file.exists()) {
-            handleFirstTimeApproval(filePath, file, approvalPath, rawValue);
+            handleFirstTimeApproval(file.toPath(), file, approvalPath, rawValue);
             return;
         }
         try {
