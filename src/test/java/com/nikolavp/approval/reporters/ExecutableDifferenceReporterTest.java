@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.nikolavp.approval.TestUtils.RAW_VALUE;
 import static com.nikolavp.approval.TestUtils.forApproval;
@@ -82,6 +83,13 @@ public class ExecutableDifferenceReporterTest {
     }
 
     @Test
+    public void shouldBuildTheCommandLineProperlyIfInitialCommandsHaveArguments() throws Exception {
+        List<String> cmd = ExecutableDifferenceReporter.buildCommandline("gvim -f", "test");
+        Assert.assertThat(cmd.size(), CoreMatchers.equalTo(3));
+        Assert.assertThat(cmd.get(1), CoreMatchers.equalTo("-f"));
+    }
+
+    @Test
     public void shouldProperlyExecuteNotSameCommand() throws Exception {
         Process process = Mockito.mock(Process.class);
         when(process.exitValue()).thenReturn(OK_CODE);
@@ -89,5 +97,11 @@ public class ExecutableDifferenceReporterTest {
         executableDifferenceReporter.notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(), forApproval(testFile));
 
         verify(executableDifferenceReporter).startProcess("gvimdiff", forApproval(testFile).getAbsolutePath(), testFile.file().getAbsolutePath());
+    }
+
+    @Test(expected = IOException.class)
+    public void shouldThrowAnExceptionIfExecutableIsNotFound() throws Exception {
+        Process process = executableDifferenceReporter.startProcess("unexistingcommand", "-invalid-flag");
+        process.waitFor();
     }
 }

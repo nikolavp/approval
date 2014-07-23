@@ -1,3 +1,4 @@
 javasphinx==0.9.11
 sphinx-rtd-theme==0.1.6
 Sphinx==1.2.2
+sphinx-autobuild==0.2.3
