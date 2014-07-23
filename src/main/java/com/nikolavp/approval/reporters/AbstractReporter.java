@@ -1,7 +1,9 @@
 package com.nikolavp.approval.reporters;
 
+import com.nikolavp.approval.Reporter;
+
 /**
- * User: nikolavp (Nikola Petrov) Date: 14-7-23 Time: 15:36
+ * An abstract class for the Reporter interface. All external reporters are advised to subclass this class.
  */
-public class AbstractReporter {
+public abstract class AbstractReporter implements Reporter {
 }

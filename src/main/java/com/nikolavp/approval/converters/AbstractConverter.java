@@ -1,7 +1,7 @@
 package com.nikolavp.approval.converters;
 
 /**
- * User: nikolavp (Nikola Petrov) Date: 14-7-23 Time: 15:37
+ * An abstract class for the Converter interface. All external converters are advised to subclass this class.
  */
-public class AbstractConverter {
+public abstract class AbstractConverter implements Converter {
 }
