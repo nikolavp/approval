@@ -22,4 +22,5 @@ public interface PathLocator<T> {
      * @return the full path for the approval result
      */
     Path getPath(T value, Path approvalFilePath);
+
 }

@@ -3,6 +3,7 @@ package com.nikolavp.approval;
 import com.nikolavp.approval.converters.Converter;
 import com.nikolavp.approval.converters.Converters;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -21,25 +22,27 @@ public class Approval<T> {
     private final Reporter reporter;
     private final FileSystemUtils fileSystemReadWriter;
     private final Converter<T> converter;
+    private PathLocator<T> pathLocator;
 
     /**
      * Create a new object that will be able to approve "things" for you.
-     *
-     * @param reporter  a reporter that will be notified as needed for approval events
+     *  @param reporter  a reporter that will be notified as needed for approval events
      * @param converter a converter that will be responsible for converting the type for approval to raw form
+     * @param pathLocator
      */
-    Approval(Reporter reporter, Converter<T> converter) {
-        this(reporter, converter, new DefaultFileSystemUtils());
+    Approval(Reporter reporter, Converter<T> converter, @Nullable PathLocator pathLocator) {
+        this(reporter, converter, pathLocator, new DefaultFileSystemUtils());
     }
 
 
     /**
      * This ctor is for testing only.
      */
-    Approval(Reporter reporter, Converter<T> converter, FileSystemUtils fileSystemReadWriter) {
+    Approval(Reporter reporter, Converter<T> converter, @Nullable PathLocator pathLocator, FileSystemUtils fileSystemReadWriter) {
         this.fileSystemReadWriter = fileSystemReadWriter;
         this.converter = converter;
         this.reporter = reporter;
+        this.pathLocator = pathLocator;
     }
 
     /**
@@ -122,7 +125,7 @@ public class Approval<T> {
      * @param filePath the path where the value will be kept for further approval
      */
     public void verify(T value, Path filePath) {
-        File file = filePath.toFile();
+        File file = mapFilePath(value, filePath);
 
         File parentPathDirectory = file.getParentFile();
         if (!parentPathDirectory.exists()) {
@@ -135,21 +138,7 @@ public class Approval<T> {
         Path approvalPath = getApprovalPath(file.toPath());
         byte[] rawValue = converter.getRawForm(value);
         if (!file.exists()) {
-            try {
-                fileSystemReadWriter.write(approvalPath, rawValue);
-            } catch (IOException e) {
-                throw new AssertionError("Couldn't write file for approval " + approvalPath, e);
-            }
-            if (reporter.approveNew(rawValue, approvalPath.toFile(), file)) {
-                try {
-                    fileSystemReadWriter.move(approvalPath, filePath);
-                } catch (IOException e) {
-                    String errorMessage = String.format("Couldn't move file for approval[%s] to the destination [%s]", approvalPath.toAbsolutePath(), filePath.toAbsolutePath());
-                    throw new AssertionError(errorMessage);
-                }
-            } else {
-                throw new AssertionError(String.format("File %s was not approved", approvalPath.toString()));
-            }
+            handleFirstTimeApproval(filePath, file, approvalPath, rawValue);
             return;
         }
         try {
@@ -169,6 +158,34 @@ public class Approval<T> {
         //value approved
     }
 
+    private void handleFirstTimeApproval(Path filePath, File file, Path approvalPath, byte[] rawValue) {
+        try {
+            fileSystemReadWriter.write(approvalPath, rawValue);
+        } catch (IOException e) {
+            throw new AssertionError("Couldn't write file for approval " + approvalPath, e);
+        }
+        if (reporter.approveNew(rawValue, approvalPath.toFile(), file)) {
+            try {
+                fileSystemReadWriter.move(approvalPath, filePath);
+            } catch (IOException e) {
+                String errorMessage = String.format("Couldn't move file for approval[%s] to the destination [%s]", approvalPath.toAbsolutePath(), filePath.toAbsolutePath());
+                throw new AssertionError(errorMessage);
+            }
+        } else {
+            throw new AssertionError(String.format("File %s was not approved", approvalPath.toString()));
+        }
+    }
+
+    private File mapFilePath(T value, Path filePath) {
+        File file;
+        if (pathLocator != null) {
+            file = pathLocator.getPath(value, filePath).toFile();
+        } else {
+            file = filePath.toFile();
+        }
+        return file;
+    }
+
     /**
      * A builder class for approvals. This is used to conveniently build new approvals for a specific type with custom reporters, converters, etc.
      *
@@ -179,6 +196,7 @@ public class Approval<T> {
         private final Class<T> clazz;
         private Converter<T> converter;
         private Reporter reporter;
+        private PathLocator<T> pathLocator;
 
         private ApprovalBuilder(Class<T> clazz) {
             this.clazz = clazz;
@@ -193,6 +211,16 @@ public class Approval<T> {
          */
         public ApprovalBuilder<T> withConveter(Converter<T> converterToBeUsed) {
             this.converter = converterToBeUsed;
+            return this;
+        }
+
+        /**
+         * Set a path locator that will be used when building the path for approval results.
+         * @param pathLocatorToBeUsed the path locator
+         * @return the same builder for chaining
+         */
+        public ApprovalBuilder<T> withPathLocator(PathLocator<T> pathLocatorToBeUsed) {
+            this.pathLocator = pathLocatorToBeUsed;
             return this;
         }
 
@@ -212,7 +240,7 @@ public class Approval<T> {
             if (reporter == null) {
                 throw new IllegalStateException("You didn't provide a reporter!");
             }
-            return new Approval<T>(reporter, converter);
+            return new Approval<T>(reporter, converter, pathLocator);
         }
 
         /**

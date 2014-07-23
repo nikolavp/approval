@@ -6,6 +6,7 @@ import org.junit.runners.model.Statement;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Created by nikolavp on 1/29/14.
@@ -18,6 +19,10 @@ public class TestTempFile implements MethodRule {
     }
     public File file() {
         return file;
+    }
+
+    public Path path() {
+        return file.toPath();
     }
 
     @Override
