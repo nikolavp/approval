@@ -118,6 +118,24 @@ we will get the following output in the console(because we are using the console
     | name = Nikola
 
 
+.. _gs-pathmappers:
+
+Path Mapper
+============
+Path mapper are used to abstract the way in which the final path file that contains the verification result is built. You are not required to use them but if you want to add structure to the your approval files you will at some point find the need for them. Let's see an example:
+
+You have the following class containing two verifications:
+
+.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/PathMappersExample.java
+
+now if you want to add another approval test you will need to write the same destination directory for the approval path again. You can of course write a private static method that does the mapping for you but we can do better with PathMappers:
+
+.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/PathMappersExample.java
+
+we abstracted the common parent directory with the help of the :java:ref:`ParentPathMapper` class. We provide other path mapper as part of the library that you can use:
+
+* :java:ref:`JunitPathMapper`
+
 .. _gs-limitations:
 
 Limitations
