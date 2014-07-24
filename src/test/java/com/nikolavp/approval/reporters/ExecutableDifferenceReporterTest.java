@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static com.nikolavp.approval.TestUtils.RAW_VALUE;
@@ -49,7 +50,7 @@ public class ExecutableDifferenceReporterTest {
             when(process.waitFor()).thenReturn(exitCode);
             doReturn(process).when(executableDifferenceReporter).startProcess("gvim", forApproval(testFile).getAbsolutePath());
 
-            boolean approved = executableDifferenceReporter.approveNew("test content".getBytes(), forApproval(testFile), testFile.file());
+            boolean approved = executableDifferenceReporter.approveNew("test content".getBytes(StandardCharsets.UTF_8), forApproval(testFile), testFile.file());
             Assert.assertThat(approved, CoreMatchers.is(false));
         }
     }
@@ -72,14 +73,14 @@ public class ExecutableDifferenceReporterTest {
         when(process.exitValue()).thenReturn(OK_CODE);
         doReturn(process).when(executableDifferenceReporter).startProcess("gvim", forApproval(testFile).getAbsolutePath());
 
-        boolean approved = executableDifferenceReporter.approveNew("test content".getBytes(), forApproval(testFile), testFile.file());
+        boolean approved = executableDifferenceReporter.approveNew("test content".getBytes(StandardCharsets.UTF_8), forApproval(testFile), testFile.file());
         Assert.assertThat(approved, CoreMatchers.is(true));
     }
 
     @Test(expected = AssertionError.class)
     public void shouldThrowAssertionError_IfThereIsErrorWhileExecutingNotSame() throws Exception {
         doThrow(new IOException("error in exec")).when(executableDifferenceReporter).startProcess(Mockito.<String>anyVararg());
-        executableDifferenceReporter.notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(), forApproval(testFile));
+        executableDifferenceReporter.notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(StandardCharsets.UTF_8), forApproval(testFile));
     }
 
     @Test
@@ -94,7 +95,7 @@ public class ExecutableDifferenceReporterTest {
         Process process = Mockito.mock(Process.class);
         when(process.exitValue()).thenReturn(OK_CODE);
         doReturn(process).when(executableDifferenceReporter).startProcess(Mockito.<String>anyVararg());
-        executableDifferenceReporter.notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(), forApproval(testFile));
+        executableDifferenceReporter.notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(StandardCharsets.UTF_8), forApproval(testFile));
 
         verify(executableDifferenceReporter).startProcess("gvimdiff", forApproval(testFile).getAbsolutePath(), testFile.file().getAbsolutePath());
     }

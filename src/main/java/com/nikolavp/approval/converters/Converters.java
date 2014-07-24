@@ -1,6 +1,7 @@
 package com.nikolavp.approval.converters;
 
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Converters for primitive types. Most of these just call toString on the passed object and then get the raw representation of the string result.
@@ -99,7 +100,7 @@ public final class Converters {
                 for (int i = 0; i < Array.getLength(value); i++) {
                     builder.append("[" + i + "] = " + String.valueOf(Array.get(value, i)) + "\n");
                 }
-                return builder.toString().getBytes();
+                return builder.toString().getBytes(StandardCharsets.UTF_8);
             }
         };
     }
@@ -108,7 +109,7 @@ public final class Converters {
         return new Converter<T>() {
             @Override
             public byte[] getRawForm(T value) {
-                return value.toString().getBytes();
+                return value.toString().getBytes(StandardCharsets.UTF_8);
             }
         };
     }

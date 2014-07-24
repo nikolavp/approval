@@ -5,6 +5,8 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * User: nikolavp
  * Date: 28/02/14
@@ -20,7 +22,7 @@ public class ReflectiveBeanConverterTest {
         byte[] rawForm = converter.getRawForm(new Entity("my simple name", 1000));
 
         //assert
-        Assert.assertThat(new String(rawForm), CoreMatchers.equalTo("name = my simple name\nage = 1000\n"));
+        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("name = my simple name\nage = 1000\n"));
     }
 
     @Test
@@ -32,6 +34,6 @@ public class ReflectiveBeanConverterTest {
         byte[] rawForm = converter.getRawForm(new Entity(null, 1000));
 
         //assert
-        Assert.assertThat(new String(rawForm), CoreMatchers.equalTo("age = 1000\n"));
+        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("age = 1000\n"));
     }
 }

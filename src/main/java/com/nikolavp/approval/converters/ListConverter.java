@@ -1,5 +1,6 @@
 package com.nikolavp.approval.converters;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -25,8 +26,8 @@ public class ListConverter<T> implements Converter<List<T>> {
     public byte[] getRawForm(List<T> values) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < values.size(); i++) {
-            builder.append("[" + i + "] = " + new String(typeConverter.getRawForm(values.get(i))) + "\n");
+            builder.append("[" + i + "] = " + new String(typeConverter.getRawForm(values.get(i)), StandardCharsets.UTF_8) + "\n");
         }
-        return builder.toString().getBytes();
+        return builder.toString().getBytes(StandardCharsets.UTF_8);
     }
 }

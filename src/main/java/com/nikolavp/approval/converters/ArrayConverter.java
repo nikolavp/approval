@@ -1,5 +1,7 @@
 package com.nikolavp.approval.converters;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * An array converter that uses another converter for it's items.
  * This allows this converter to be composed with another one and allow you to convert your types even if they are in an array.
@@ -25,8 +27,12 @@ public class ArrayConverter<T> implements Converter<T[]> {
     public byte[] getRawForm(T[] values) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < values.length; i++) {
-            builder.append("[" + i + "] = " + new String(typeConverter.getRawForm(values[i])) + "\n");
+            builder.append("[")
+                    .append(i)
+                    .append("] = ")
+                    .append(new String(typeConverter.getRawForm(values[i]), StandardCharsets.UTF_8))
+                    .append("\n");
         }
-        return builder.toString().getBytes();
+        return builder.toString().getBytes(StandardCharsets.UTF_8);
     }
 }
