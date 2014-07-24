@@ -1,4 +1,4 @@
-package com.nikolavp.approval.pathlocators;
+package com.nikolavp.approval.pathmappers;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -10,10 +10,10 @@ import java.nio.file.Paths;
 /**
  * User: nikolavp (Nikola Petrov) Date: 14-7-23 Time: 17:19
  */
-public class ParentPathLocatorTest {
+public class ParentPathMapperTest {
     @Test
     public void shouldReturnAPathThatWasResolvedFromParent() throws Exception {
-        final Path path = new ParentPathLocator(Paths.get("parent")).getPath("someValue", Paths.get("subpath"));
+        final Path path = new ParentPathMapper(Paths.get("parent")).getPath("someValue", Paths.get("subpath"));
 
         Assert.assertThat(path, CoreMatchers.equalTo(Paths.get("parent", "subpath")));
     }

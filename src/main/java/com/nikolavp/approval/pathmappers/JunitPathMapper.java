@@ -1,8 +1,8 @@
-package com.nikolavp.approval.pathlocators;
+package com.nikolavp.approval.pathmappers;
 
 
-import com.nikolavp.approval.FullPathLocator;
-import com.nikolavp.approval.PathLocator;
+import com.nikolavp.approval.FullPathMapper;
+import com.nikolavp.approval.PathMapper;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -12,15 +12,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * A path locator that have to be declared as a {@link org.junit.Rule} and will use the standard junit mechanisms to put
+ * A path mapper that have to be declared as a {@link org.junit.Rule} and will use the standard junit mechanisms to put
  * your approval results in $package-name-with-slashes/$classname/$methodname.
  *
- * <p> This class can be used as a {@link com.nikolavp.approval.PathLocator} in which case it will put your approval
- * results in that directory or you can use it as a {@link com.nikolavp.approval.FullPathLocator} in which case your
+ * <p> This class can be used as a {@link com.nikolavp.approval.PathMapper} in which case it will put your approval
+ * results in that directory or you can use it as a {@link com.nikolavp.approval.FullPathMapper} in which case your
  * approval result for the <b>single virifacion</b> will be put in a file with that path. In the latter case you will
  * have to make sure that there aren't two approvals for a single test method. </p>
  */
-public class JunitPathLocator implements TestRule, PathLocator, FullPathLocator {
+public class JunitPathMapper implements TestRule, PathMapper, FullPathMapper {
 
     private final Path parentPath;
     private Path currentTestPath;
@@ -30,7 +30,7 @@ public class JunitPathLocator implements TestRule, PathLocator, FullPathLocator 
      *
      * @param parentPath the parent path
      */
-    public JunitPathLocator(Path parentPath) {
+    public JunitPathMapper(Path parentPath) {
         this.parentPath = parentPath;
     }
 

@@ -3,15 +3,15 @@ package com.nikolavp.approval;
 import java.nio.file.Path;
 
 /**
- * A locator that unlike {@link com.nikolavp.approval.PathLocator} doesn't resolve the approval file path based on a
+ * A mapper that unlike {@link PathMapper} doesn't resolve the approval file path based on a
  * given sub path but only needs the value. Of course there are possible implementations that don'n even need the value
- * like {@link com.nikolavp.approval.pathlocators.JunitPathLocator}.
+ * like {@link com.nikolavp.approval.pathmappers.JunitPathMapper}.
  *
  * @param <T> the value that will be approved
  *
- * @see com.nikolavp.approval.PathLocator
+ * @see PathMapper
  */
-public interface FullPathLocator<T> {
+public interface FullPathMapper<T> {
     /**
      * Get the full approval path based on the value.
      *

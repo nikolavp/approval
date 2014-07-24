@@ -1,17 +1,17 @@
-package com.nikolavp.approval.pathlocators;
+package com.nikolavp.approval.pathmappers;
 
-import com.nikolavp.approval.PathLocator;
+import com.nikolavp.approval.PathMapper;
 
 import java.nio.file.Path;
 
 /**
- * A path locator that will put all approvals in a common parent path. Let's say you want to put all your approval
+ * A path mapper that will put all approvals in a common parent path. Let's say you want to put all your approval
  * results in <b>src/test/resources/approval</b>(we assume a common maven directory structure) then you can use this
- * locator as follows:
+ * mapper as follows:
  * <p/>
  * <pre>{@code
  *  Approval approval = Approval.of(String.class)
- *  .withPathLocator(new ParentPathLocator(Paths.get("src/test/resources/approval")))
+ *  .withPathMapper(new ParentPathMapper(Paths.get("src/test/resources/approval")))
  *  .build();
  * }
  * </pre>
@@ -24,16 +24,16 @@ import java.nio.file.Path;
  * <p/>
  * will put the approved value in the file <b>src/test/resources/approval/some_cool_value.txt</b>
  */
-public class ParentPathLocator implements PathLocator {
+public class ParentPathMapper implements PathMapper {
 
     private final Path parentPath;
 
     /**
-     * Creates a parent path locator that puts approvals in the given parent path.
+     * Creates a parent path mapper that puts approvals in the given parent path.
      *
      * @param parentPath the parent path for all approvals
      */
-    public ParentPathLocator(Path parentPath) {
+    public ParentPathMapper(Path parentPath) {
         this.parentPath = parentPath;
     }
 

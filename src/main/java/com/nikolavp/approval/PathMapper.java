@@ -10,9 +10,9 @@ import java.nio.file.Path;
  *
  * @param <T> the value that will be approved
  *
- * @see com.nikolavp.approval.pathlocators.ParentPathLocator
+ * @see com.nikolavp.approval.pathmappers.ParentPathMapper
  */
-public interface PathLocator<T> {
+public interface PathMapper<T> {
     /**
      * Gets the path for the approval result based on the value that we want to approve and a sub path for that.
      *

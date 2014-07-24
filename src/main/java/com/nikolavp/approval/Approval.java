@@ -22,27 +22,27 @@ public class Approval<T> {
     private final Reporter reporter;
     private final FileSystemUtils fileSystemReadWriter;
     private final Converter<T> converter;
-    private PathLocator<T> pathLocator;
+    private PathMapper<T> pathMapper;
 
     /**
      * Create a new object that will be able to approve "things" for you.
      *  @param reporter  a reporter that will be notified as needed for approval events
      * @param converter a converter that will be responsible for converting the type for approval to raw form
-     * @param pathLocator
+     * @param pathMapper
      */
-    Approval(Reporter reporter, Converter<T> converter, @Nullable PathLocator pathLocator) {
-        this(reporter, converter, pathLocator, new DefaultFileSystemUtils());
+    Approval(Reporter reporter, Converter<T> converter, @Nullable PathMapper pathMapper) {
+        this(reporter, converter, pathMapper, new DefaultFileSystemUtils());
     }
 
 
     /**
      * This ctor is for testing only.
      */
-    Approval(Reporter reporter, Converter<T> converter, @Nullable PathLocator pathLocator, FileSystemUtils fileSystemReadWriter) {
+    Approval(Reporter reporter, Converter<T> converter, @Nullable PathMapper pathMapper, FileSystemUtils fileSystemReadWriter) {
         this.fileSystemReadWriter = fileSystemReadWriter;
         this.converter = converter;
         this.reporter = reporter;
-        this.pathLocator = pathLocator;
+        this.pathMapper = pathMapper;
     }
 
     /**
@@ -178,8 +178,8 @@ public class Approval<T> {
 
     private File mapFilePath(T value, Path filePath) {
         File file;
-        if (pathLocator != null) {
-            file = pathLocator.getPath(value, filePath).toFile();
+        if (pathMapper != null) {
+            file = pathMapper.getPath(value, filePath).toFile();
         } else {
             file = filePath.toFile();
         }
@@ -196,7 +196,7 @@ public class Approval<T> {
         private final Class<T> clazz;
         private Converter<T> converter;
         private Reporter reporter;
-        private PathLocator<T> pathLocator;
+        private PathMapper<T> pathMapper;
 
         private ApprovalBuilder(Class<T> clazz) {
             this.clazz = clazz;
@@ -215,12 +215,12 @@ public class Approval<T> {
         }
 
         /**
-         * Set a path locator that will be used when building the path for approval results.
-         * @param pathLocatorToBeUsed the path locator
+         * Set a path mapper that will be used when building the path for approval results.
+         * @param pathMapperToBeUsed the path mapper
          * @return the same builder for chaining
          */
-        public ApprovalBuilder<T> withPathLocator(PathLocator<T> pathLocatorToBeUsed) {
-            this.pathLocator = pathLocatorToBeUsed;
+        public ApprovalBuilder<T> withPathMapper(PathMapper<T> pathMapperToBeUsed) {
+            this.pathMapper = pathMapperToBeUsed;
             return this;
         }
 
@@ -240,7 +240,7 @@ public class Approval<T> {
             if (reporter == null) {
                 throw new IllegalStateException("You didn't provide a reporter!");
             }
-            return new Approval<T>(reporter, converter, pathLocator);
+            return new Approval<T>(reporter, converter, pathMapper);
         }
 
         /**

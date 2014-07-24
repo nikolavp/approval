@@ -31,7 +31,7 @@ public class ApprovalTest {
     private FileSystemUtils fileSystemUtils;
 
     @Mock
-    private PathLocator pathLocator;
+    private PathMapper pathMapper;
 
     @Rule
     public TestTempFile testFile = new TestTempFile();
@@ -169,15 +169,15 @@ public class ApprovalTest {
     }
 
     @Test
-    public void shouldProperlyUsePathLocatorsForResolvingVerificationFile() throws Exception {
+    public void shouldProperlyUsePathMappersForResolvingVerificationFile() throws Exception {
         //assign
         final Path path = Paths.get("parent", "subpath");
         //noinspection unchecked
-        when(pathLocator.getPath(any(), any(Path.class))).thenReturn(path);
+        when(pathMapper.getPath(any(), any(Path.class))).thenReturn(path);
         when(reporter.approveNew(any(byte[].class), any(File.class), any(File.class))).thenReturn(true);
 
         //act
-        new Approval<>(reporter, new DefaultConverter(), pathLocator, fileSystemUtils).verify(TestUtils.RAW_VALUE, testFile.path());
+        new Approval<>(reporter, new DefaultConverter(), pathMapper, fileSystemUtils).verify(TestUtils.RAW_VALUE, testFile.path());
 
         //assert
         verify(fileSystemUtils).createDirectories(new File("parent"));
