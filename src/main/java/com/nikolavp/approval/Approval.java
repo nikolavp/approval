@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 /**
  * The main entry point class for each approval process. This is the main service class that is doing the hard work - it calls other classes for custom logic based on the object that is approved.
@@ -38,7 +39,7 @@ import java.util.Arrays;
  * @param <T> the type of the object that will be approved by this {@link Approval}
  */
 public class Approval<T> {
-
+    private static final Logger LOG  = Logger.getLogger(Approval.class.getName());
     private static final String FOR_APPROVAL_EXTENSION = ".forapproval";
     private final Reporter reporter;
     private final FileSystemUtils fileSystemReadWriter;
@@ -163,6 +164,7 @@ public class Approval<T> {
         Path approvalPath = getApprovalPath(file.toPath());
         byte[] rawValue = converter.getRawForm(value);
         if (!file.exists()) {
+            LOG.info(file + " didn't exist. You will be asked for approval");
             handleFirstTimeApproval(file.toPath(), file, approvalPath, rawValue);
             return;
         }
@@ -170,6 +172,7 @@ public class Approval<T> {
             byte[] fileContent = fileSystemReadWriter.readFully(file.toPath());
             if (!Arrays.equals(fileContent, rawValue)) {
                 try {
+                    LOG.info("Approval in " + file + " is not the same as the last value. You will be asked for approval of the new value.");
                     fileSystemReadWriter.write(approvalPath, rawValue);
                 } catch (IOException e) {
                     throw new AssertionError("Couldn't write the new approval file " + file, e);

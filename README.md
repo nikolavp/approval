@@ -8,7 +8,7 @@ The current project is using ideas from [ApprovalTests](https://github.com/appro
 
 Dependencies
 ---
-slf4j is our only dependency that is required. 
+There are currently no dependencies for the project
 
 ## LICENSE
 [Apache 2.0 License](https://github.com/SignalR/SignalR/blob/master/LICENSE.md)

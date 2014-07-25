@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.logging.Logger;
 
 /**
  * A default implementation for {@link FileSystemUtils}.
@@ -34,6 +35,9 @@ import java.nio.file.Path;
  * Time: 12:26
  */
 class DefaultFileSystemUtils implements FileSystemUtils {
+
+    private static final Logger LOG  = Logger.getLogger(DefaultFileSystemUtils.class.getName());
+
     @Override
     public void write(Path path, byte[] value) throws IOException {
         Files.write(path, value);
@@ -51,6 +55,7 @@ class DefaultFileSystemUtils implements FileSystemUtils {
 
     @Override
     public void createDirectories(File directory) throws IOException {
+        LOG.info("Creating directory " + directory);
         if (!directory.mkdirs()) {
             throw new IOException("Couldn't create directory " + directory);
         }
