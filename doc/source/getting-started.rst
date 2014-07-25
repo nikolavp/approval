@@ -20,7 +20,7 @@ Just add the ``approval`` library as a dependency:
 
     <dependencies>
         <dependency>
-            <groupId>com.nikolavp</groupId>
+            <groupId>com.github.nikolavp</groupId>
             <artifactId>approval</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
@@ -28,8 +28,7 @@ Just add the ``approval`` library as a dependency:
 
 
 .. note::
-
-    To be able use the library you will have to build it yourself until there are artifacts in maven central.
+    Currently there are no stable version but we plan to release our first release soon, stay tuned :)
 
 How is approval testing different
 =================================
