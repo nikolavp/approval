@@ -7,6 +7,7 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,11 +57,13 @@ public class JunitPathMapper implements TestRule, PathMapper, FullPathMapper {
         return currentTestPath;
     }
 
+    @Nonnull
     @Override
     public Path getApprovalPath(Object value) {
         return Paths.get(currentTestPath + ".approved");
     }
 
+    @Nonnull
     @Override
     public Path getPath(Object value, Path approvalFilePath) {
         return currentTestPath.resolve(approvalFilePath);

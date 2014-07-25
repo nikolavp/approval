@@ -2,6 +2,7 @@ package com.nikolavp.approval.pathmappers;
 
 import com.nikolavp.approval.PathMapper;
 
+import javax.annotation.Nonnull;
 import java.nio.file.Path;
 
 /**
@@ -37,6 +38,7 @@ public class ParentPathMapper implements PathMapper {
         this.parentPath = parentPath;
     }
 
+    @Nonnull
     @Override
     public Path getPath(Object value, Path approvalFilePath) {
         return parentPath.resolve(approvalFilePath);

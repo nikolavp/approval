@@ -3,6 +3,7 @@ package com.nikolavp.approval;
 import com.nikolavp.approval.converters.Converter;
 import com.nikolavp.approval.converters.Converters;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
@@ -26,11 +27,11 @@ public class Approval<T> {
 
     /**
      * Create a new object that will be able to approve "things" for you.
-     *  @param reporter  a reporter that will be notified as needed for approval events
+     * @param reporter  a reporter that will be notified as needed for approval events
      * @param converter a converter that will be responsible for converting the type for approval to raw form
-     * @param pathMapper
+     * @param pathMapper the path mapper that will be used
      */
-    Approval(Reporter reporter, Converter<T> converter, @Nullable PathMapper pathMapper) {
+    Approval(Reporter reporter, Converter<T> converter, @Nullable PathMapper<T> pathMapper) {
         this(reporter, converter, pathMapper, new DefaultFileSystemUtils());
     }
 
@@ -38,7 +39,7 @@ public class Approval<T> {
     /**
      * This ctor is for testing only.
      */
-    Approval(Reporter reporter, Converter<T> converter, @Nullable PathMapper pathMapper, FileSystemUtils fileSystemReadWriter) {
+    Approval(Reporter reporter, Converter<T> converter, @Nullable PathMapper<T> pathMapper, FileSystemUtils fileSystemReadWriter) {
         this.fileSystemReadWriter = fileSystemReadWriter;
         this.converter = converter;
         this.reporter = reporter;
@@ -52,6 +53,7 @@ public class Approval<T> {
      * @param <T>   the type of the objects you will be approving
      * @return an approval builder that will be able to construct an {@link Approval} for your objects
      */
+    @Nonnull
     public static <T> ApprovalBuilder<T> of(Class<T> clazz) {
         return new ApprovalBuilder<T>(clazz);
     }
@@ -62,6 +64,7 @@ public class Approval<T> {
      * @param filePath the original path to value
      * @return the path for approval
      */
+    @Nonnull
     public static Path getApprovalPath(Path filePath) {
         return FileSystems.getDefault().getPath(filePath.toString() + FOR_APPROVAL_EXTENSION);
     }
@@ -109,11 +112,13 @@ public class Approval<T> {
     }
 
     /* Expose this to the tests */
+    @Nonnull
     Converter<T> getConverter() {
         return converter;
     }
 
     /* Expose this to the tests */
+    @Nonnull
     Reporter getReporter() {
         return reporter;
     }
@@ -209,6 +214,7 @@ public class Approval<T> {
          * @return the same builder for chaining
          * @see Converter
          */
+        @Nonnull
         public ApprovalBuilder<T> withConveter(Converter<T> converterToBeUsed) {
             this.converter = converterToBeUsed;
             return this;
@@ -219,6 +225,7 @@ public class Approval<T> {
          * @param pathMapperToBeUsed the path mapper
          * @return the same builder for chaining
          */
+        @Nonnull
         public ApprovalBuilder<T> withPathMapper(PathMapper<T> pathMapperToBeUsed) {
             this.pathMapper = pathMapperToBeUsed;
             return this;
@@ -229,6 +236,7 @@ public class Approval<T> {
          *
          * @return a new approval for the specified type with custom configuration if any
          */
+        @Nonnull
         public Approval<T> build() {
             if (converter == null) {
                 try {

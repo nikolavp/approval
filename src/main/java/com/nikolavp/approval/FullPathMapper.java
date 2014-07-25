@@ -1,5 +1,6 @@
 package com.nikolavp.approval;
 
+import javax.annotation.Nonnull;
 import java.nio.file.Path;
 
 /**
@@ -18,5 +19,6 @@ public interface FullPathMapper<T> {
      * @param value the value that will be approved and for which the approval path will be built
      * @return a Path for the given value
      */
+    @Nonnull
     Path getApprovalPath(T value);
 }

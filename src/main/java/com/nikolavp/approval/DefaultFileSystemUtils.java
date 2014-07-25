@@ -13,7 +13,7 @@ import java.nio.file.Path;
  * Date: 27/02/14
  * Time: 12:26
  */
-public class DefaultFileSystemUtils implements FileSystemUtils {
+class DefaultFileSystemUtils implements FileSystemUtils {
     @Override
     public void write(Path path, byte[] value) throws IOException {
         Files.write(path, value);

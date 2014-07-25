@@ -1,5 +1,6 @@
 package com.nikolavp.approval.converters;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 
@@ -94,6 +95,7 @@ public final class Converters {
 
     static Converter ofArray() {
         return new Converter() {
+            @Nonnull
             @Override
             public byte[] getRawForm(Object value) {
                 StringBuilder builder = new StringBuilder();
@@ -107,6 +109,7 @@ public final class Converters {
 
     static <T> Converter<T> of() {
         return new Converter<T>() {
+            @Nonnull
             @Override
             public byte[] getRawForm(T value) {
                 return value.toString().getBytes(StandardCharsets.UTF_8);

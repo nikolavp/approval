@@ -1,5 +1,6 @@
 package com.nikolavp.approval.converters;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -23,6 +24,7 @@ public class ArrayConverter<T> implements Converter<T[]> {
         this.typeConverter = typeConverter;
     }
 
+    @Nonnull
     @Override
     public byte[] getRawForm(T[] values) {
         StringBuilder builder = new StringBuilder();

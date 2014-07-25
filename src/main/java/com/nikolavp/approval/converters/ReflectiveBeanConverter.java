@@ -1,5 +1,6 @@
 package com.nikolavp.approval.converters;
 
+import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 
@@ -13,6 +14,7 @@ import java.lang.reflect.Field;
  * @param <T> the type of objects you want convert to it's raw form
  */
 public class ReflectiveBeanConverter<T> implements Converter<T> {
+    @Nonnull
     @Override
     public byte[] getRawForm(T value) {
         Field[] fields = value.getClass().getDeclaredFields();

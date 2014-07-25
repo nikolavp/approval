@@ -1,5 +1,6 @@
 package com.nikolavp.approval;
 
+import javax.annotation.Nonnull;
 import java.nio.file.Path;
 
 /**
@@ -21,6 +22,7 @@ public interface PathMapper<T> {
      *                         Approval#verify(Object, java.nio.file.Path)}
      * @return the full path for the approval result
      */
+    @Nonnull
     Path getPath(T value, Path approvalFilePath);
 
 }

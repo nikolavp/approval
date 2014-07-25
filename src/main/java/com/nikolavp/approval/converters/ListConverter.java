@@ -1,5 +1,6 @@
 package com.nikolavp.approval.converters;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class ListConverter<T> implements Converter<List<T>> {
         this.typeConverter = typeConverter;
     }
 
+    @Nonnull
     @Override
     public byte[] getRawForm(List<T> values) {
         StringBuilder builder = new StringBuilder();
