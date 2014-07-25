@@ -61,7 +61,6 @@ public class ExecutableDifferenceReporter implements Reporter {
 
     @Override
     public void notTheSame(byte[] oldValue, File fileForVerification, byte[] newValue, File fileForApproval) {
-
         try {
             execute(buildNotTheSameCommand(fileForVerification, fileForApproval));
         } catch (IOException e) {
