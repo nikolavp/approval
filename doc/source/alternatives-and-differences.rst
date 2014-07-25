@@ -23,6 +23,18 @@ Things we will implement and are still missing
 * ImageWebReporter reporter - we should bring support for web reporter abstraction
 * ImageReporter reporter - we should have this as a FirstWorkingReporter
 * DelayedClipboardReporter or ClipboardReporter - those look almost the same
+* FileLaunherReporter - launch the file. This should use the windows and unix proper commands
+  
+  'if (File.separatorChar == '\\')
+    {
+      cmd = "cmd /C start \"Needed Title\" \"%s\" /B";
+    }
+    else
+    {
+      cmd = "open %s";
+    }'
+
+    use xdg-open on Linux
 
 All reporters from https://github.com/approvals/ApprovalTests.Java/tree/master/java/org/approvaltests/reporters/macosx
 All reporters from https://github.com/approvals/ApprovalTests.Java/tree/master/java/org/approvaltests/reporters/windows
