@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets;
  * Time: 19:34
  * @param <T> The type of the items in the list that this converter accepts
  */
-public class ArrayConverter<T> implements Converter<T[]> {
+public class ArrayConverter<T> extends AbstractStringConverter<T[]> {
     private final Converter<T> typeConverter;
 
 
@@ -46,7 +46,7 @@ public class ArrayConverter<T> implements Converter<T[]> {
 
     @Nonnull
     @Override
-    public byte[] getRawForm(T[] values) {
+    protected String getStringForm(T[] values) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < values.length; i++) {
             builder.append("[")
@@ -55,6 +55,6 @@ public class ArrayConverter<T> implements Converter<T[]> {
                     .append(new String(typeConverter.getRawForm(values[i]), StandardCharsets.UTF_8))
                     .append("\n");
         }
-        return builder.toString().getBytes(StandardCharsets.UTF_8);
+        return builder.toString();
     }
 }

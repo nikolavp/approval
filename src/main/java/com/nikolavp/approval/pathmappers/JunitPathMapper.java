@@ -28,6 +28,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -85,7 +86,7 @@ public class JunitPathMapper implements TestRule, PathMapper, FullPathMapper {
 
     @Nonnull
     @Override
-    public Path getPath(Object value, Path approvalFilePath) {
+    public Path getPath(@Nullable Object value, Path approvalFilePath) {
         return currentTestPath.resolve(approvalFilePath);
     }
 }

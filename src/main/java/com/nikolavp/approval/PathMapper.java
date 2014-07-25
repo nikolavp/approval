@@ -21,6 +21,7 @@ package com.nikolavp.approval;
  */
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 
 /**
@@ -43,6 +44,6 @@ public interface PathMapper<T> {
      * @return the full path for the approval result
      */
     @Nonnull
-    Path getPath(T value, Path approvalFilePath);
+    Path getPath(@Nullable T value, Path approvalFilePath);
 
 }

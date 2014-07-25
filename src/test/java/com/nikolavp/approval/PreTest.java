@@ -1,8 +1,8 @@
-package com.nikolavp.approval.converters;
+package com.nikolavp.approval;
 
 /*
  * #%L
- * approval
+ * com.nikolavp.approval:core
  * %%
  * Copyright (C) 2014 Nikolavp
  * %%
@@ -24,23 +24,23 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.nio.charset.StandardCharsets;
-
 /**
- * User: nikolavp
- * Date: 28/02/14
- * Time: 15:10
+ * User: nikolavp (Nikola Petrov) Date: 14-7-25 Time: 15:30
  */
-public class DefaultConverterTest {
+public class PreTest extends StaticUtilityTestAbstract {
     @Test
-    public void shouldReturnTheSameContentThatWasPassedIn() throws Exception {
-        byte[] someContent = "test".getBytes(StandardCharsets.UTF_8);
-        Assert.assertThat(new DefaultConverter().getRawForm(someContent), CoreMatchers.equalTo(someContent));
+    public void shouldThrowIllegalArgumentExceptionIfArgumentIsNull() throws Exception {
+        try {
+            Pre.notNull(null, "myName");
+            Assert.fail("Should throw an exception!");
+        } catch (IllegalArgumentException ex) {
+            final String message = ex.getMessage();
+            Assert.assertThat(message, CoreMatchers.equalTo("myName must not be null!"));
+        }
     }
 
-    @Test
-    public void shouldReturnTheStringNullAsRawFormOnNullValues() throws Exception {
-        final byte[] rawForm = new DefaultConverter().getRawForm(null);
-        Assert.assertThat(rawForm, CoreMatchers.equalTo("null".getBytes(StandardCharsets.UTF_8)));
+    @Override
+    protected Class<?> getUtilityClassUnderTest() {
+        return Pre.class;
     }
 }

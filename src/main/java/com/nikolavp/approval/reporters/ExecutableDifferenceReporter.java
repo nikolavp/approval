@@ -53,6 +53,7 @@ public class ExecutableDifferenceReporter implements Reporter {
 
     @Override
     public void notTheSame(byte[] oldValue, File fileForVerification, byte[] newValue, File fileForApproval) {
+
         try {
             execute(diffCommand, fileForApproval.getAbsolutePath(), fileForVerification.getAbsolutePath());
         } catch (IOException e) {

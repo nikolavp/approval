@@ -87,6 +87,8 @@ public class Approval<T> {
      */
     @Nonnull
     public static Path getApprovalPath(Path filePath) {
+        Pre.notNull(filePath, "filePath");
+
         return FileSystems.getDefault().getPath(filePath.toString() + FOR_APPROVAL_EXTENSION);
     }
 
@@ -150,7 +152,9 @@ public class Approval<T> {
      * @param value    the value object to be approved
      * @param filePath the path where the value will be kept for further approval
      */
-    public void verify(T value, Path filePath) {
+    public void verify(@Nullable T value, Path filePath) {
+        Pre.notNull(filePath, "filePath");
+
         File file = mapFilePath(value, filePath);
 
         File parentPathDirectory = file.getParentFile();
@@ -204,7 +208,7 @@ public class Approval<T> {
         }
     }
 
-    private File mapFilePath(T value, Path filePath) {
+    private File mapFilePath(@Nullable T value, Path filePath) {
         File file;
         if (pathMapper != null) {
             file = pathMapper.getPath(value, filePath).toFile();
@@ -239,6 +243,8 @@ public class Approval<T> {
          */
         @Nonnull
         public ApprovalBuilder<T> withConveter(Converter<T> converterToBeUsed) {
+            Pre.notNull(converterToBeUsed, "converter");
+
             this.converter = converterToBeUsed;
             return this;
         }
@@ -250,6 +256,8 @@ public class Approval<T> {
          */
         @Nonnull
         public ApprovalBuilder<T> withPathMapper(PathMapper<T> pathMapperToBeUsed) {
+            Pre.notNull(pathMapperToBeUsed, "pathMapper");
+
             this.pathMapper = pathMapperToBeUsed;
             return this;
         }
@@ -282,6 +290,8 @@ public class Approval<T> {
          * @see Reporter
          */
         public ApprovalBuilder<T> withReporter(Reporter reporterToBeUsed) {
+            Pre.notNull(reporterToBeUsed, "reporter");
+
             this.reporter = reporterToBeUsed;
             return this;
         }

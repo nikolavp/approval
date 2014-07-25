@@ -2,7 +2,7 @@ package com.nikolavp.approval.converters;
 
 /*
  * #%L
- * approval
+ * com.nikolavp.approval:core
  * %%
  * Copyright (C) 2014 Nikolavp
  * %%
@@ -24,23 +24,32 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 
 /**
- * User: nikolavp
- * Date: 28/02/14
- * Time: 15:10
+ * User: nikolavp (Nikola Petrov) Date: 14-7-25 Time: 15:58
  */
-public class DefaultConverterTest {
+public class AbstractStringConverterTest {
+
+    private static final AbstractStringConverter<String> CONVERTER = new AbstractStringConverter<String>() {
+        @Nonnull
+        @Override
+        protected String getStringForm(String value) {
+            return value;
+        }
+    };
+
     @Test
-    public void shouldReturnTheSameContentThatWasPassedIn() throws Exception {
-        byte[] someContent = "test".getBytes(StandardCharsets.UTF_8);
-        Assert.assertThat(new DefaultConverter().getRawForm(someContent), CoreMatchers.equalTo(someContent));
+    public void shouldCallGetStringFormForValidResult() throws Exception {
+        final String testValue = "test1";
+        final byte[] rawForm = CONVERTER.getRawForm(testValue);
+        Assert.assertThat(rawForm, CoreMatchers.equalTo(testValue.getBytes(StandardCharsets.UTF_8)));
     }
 
     @Test
     public void shouldReturnTheStringNullAsRawFormOnNullValues() throws Exception {
-        final byte[] rawForm = new DefaultConverter().getRawForm(null);
+        final byte[] rawForm = CONVERTER.getRawForm(null);
         Assert.assertThat(rawForm, CoreMatchers.equalTo("null".getBytes(StandardCharsets.UTF_8)));
     }
 }

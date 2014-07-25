@@ -21,7 +21,6 @@ package com.nikolavp.approval.converters;
  */
 
 import javax.annotation.Nonnull;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 
 /**
@@ -33,10 +32,10 @@ import java.lang.reflect.Field;
  *
  * @param <T> the type of objects you want convert to it's raw form
  */
-public class ReflectiveBeanConverter<T> implements Converter<T> {
+public class ReflectiveBeanConverter<T> extends AbstractStringConverter<T> {
     @Nonnull
     @Override
-    public byte[] getRawForm(T value) {
+    protected String getStringForm(T value) {
         Field[] fields = value.getClass().getDeclaredFields();
         StringBuilder builder = new StringBuilder();
         for (Field field : fields) {
@@ -45,18 +44,16 @@ public class ReflectiveBeanConverter<T> implements Converter<T> {
             try {
                 fieldValue = field.get(value);
                 if (fieldValue != null) {
-                    builder.append(field.getName() + " = " + fieldValue + "\n");
+                    builder.append(field.getName())
+                           .append(" = ")
+                           .append(fieldValue)
+                           .append("\n");
                 }
             } catch (IllegalAccessException e) {
                 /* This shouldn't happen because we have set accessible = true */
                 throw new IllegalStateException("Couldn't access field " + field.getName());
             }
         }
-        try {
-            return builder.toString().getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            /* UTF is guaranteed to be there on modern systems */
-            throw new IllegalStateException("UTF is not supported on your platform!?", e);
-        }
+        return builder.toString();
     }
 }

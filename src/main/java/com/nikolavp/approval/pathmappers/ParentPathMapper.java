@@ -23,6 +23,7 @@ package com.nikolavp.approval.pathmappers;
 import com.nikolavp.approval.PathMapper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 
 /**
@@ -60,7 +61,7 @@ public class ParentPathMapper implements PathMapper {
 
     @Nonnull
     @Override
-    public Path getPath(Object value, Path approvalFilePath) {
+    public Path getPath(@Nullable Object value, Path approvalFilePath) {
         return parentPath.resolve(approvalFilePath);
     }
 }

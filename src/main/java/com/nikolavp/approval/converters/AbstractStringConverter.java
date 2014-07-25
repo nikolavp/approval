@@ -2,7 +2,7 @@ package com.nikolavp.approval.converters;
 
 /*
  * #%L
- * approval
+ * com.nikolavp.approval:core
  * %%
  * Copyright (C) 2014 Nikolavp
  * %%
@@ -22,22 +22,31 @@ package com.nikolavp.approval.converters;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
 
 /**
- * A converter interface. Converters are the objects in the approval system that convert your object to their raw form that can be written to the files.
- * Note that the raw form is not always a string representation of the object. If for example your object is an image.
- * User: nikolavp
- * Date: 28/02/14
- * Time: 14:47
- * @param <T> the type you are going to convert to raw form
+ * A convenient abstract converter to handle object approvals on string representable objects.
+ *
+ * @param <T> the type you want to convert
  */
-public interface Converter<T> {
+public abstract class AbstractStringConverter<T> extends AbstractConverter<T> {
+
+    @Nonnull
+    @Override
+    public final byte[] getRawForm(@Nullable T value) {
+        if (value == null) {
+            return "null".getBytes(StandardCharsets.UTF_8);
+        }
+        return getStringForm(value).getBytes(StandardCharsets.UTF_8);
+    }
+
     /**
-     * Gets the raw representation of the type object. This representation will be written in the files you are going to then use in the approval process.
+     * Gets the string representation of the type object. This representation will be written in the files you are going
+     * to then use in the approval process.
      *
      * @param value the object that you want to convert
-     * @return the raw representation of the object
+     * @return the string representation of the object
      */
     @Nonnull
-    byte[] getRawForm(@Nullable T value);
+    protected abstract String getStringForm(T value);
 }

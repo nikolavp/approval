@@ -32,7 +32,7 @@ import java.util.List;
  * Time: 17:47
  * @param <T> The type of the items in the list that this converter accepts
  */
-public class ListConverter<T> implements Converter<List<T>> {
+public class ListConverter<T> extends AbstractStringConverter<List<T>> {
     private final Converter<T> typeConverter;
 
     /**
@@ -45,11 +45,15 @@ public class ListConverter<T> implements Converter<List<T>> {
 
     @Nonnull
     @Override
-    public byte[] getRawForm(List<T> values) {
+    protected String getStringForm(List<T> values) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < values.size(); i++) {
-            builder.append("[" + i + "] = " + new String(typeConverter.getRawForm(values.get(i)), StandardCharsets.UTF_8) + "\n");
+            builder.append("[")
+                    .append(i)
+                    .append("] = ")
+                    .append(new String(typeConverter.getRawForm(values.get(i)), StandardCharsets.UTF_8))
+                    .append("\n");
         }
-        return builder.toString().getBytes(StandardCharsets.UTF_8);
+        return builder.toString();
     }
 }

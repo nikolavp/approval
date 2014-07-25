@@ -1,8 +1,8 @@
-package com.nikolavp.approval.converters;
+package com.nikolavp.approval;
 
 /*
  * #%L
- * approval
+ * com.nikolavp.approval:core
  * %%
  * Copyright (C) 2014 Nikolavp
  * %%
@@ -20,23 +20,25 @@ package com.nikolavp.approval.converters;
  * #L%
  */
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.nio.charset.StandardCharsets;
 
 /**
- * Just a simple converter for byte array primitives. We might want to move this into {@link Converters}.
- * User: nikolavp
- * Date: 28/02/14
- * Time: 14:54
+ * Pre conditions exceptions.
  */
-public class DefaultConverter implements Converter<byte[]> {
-    @Nonnull
-    @Override
-    public byte[] getRawForm(@Nullable byte[] value) {
+public final class Pre {
+    private Pre() {
+
+    }
+
+    /**
+     * Verify that a value is not null.
+     *
+     * @param value the value to verify
+     * @param name the name of the value that will be used in the exception message.
+     */
+    public static void notNull(@Nullable Object value, String name) {
         if (value == null) {
-            return "null".getBytes(StandardCharsets.UTF_8);
+            throw new IllegalArgumentException(name + " must not be null!");
         }
-        return value;
     }
 }

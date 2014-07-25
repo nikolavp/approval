@@ -197,8 +197,6 @@
             <!-- Those are not needed at runtime thanks to the way java works -->
             <scope>provided</scope>
         </dependency>
-
-
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -223,12 +221,6 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
             <version>1.9.0</version>
-        </dependency>
-        <!-- needed to suppress warnings in the code -->
-        <dependency>
-            <groupId>net.sourceforge.findbugs</groupId>
-            <artifactId>annotations</artifactId>
-            <version>1.3.2</version>
         </dependency>
     </dependencies>
     <profiles>
