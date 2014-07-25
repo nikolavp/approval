@@ -103,6 +103,33 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.7</version>
+                <configuration>
+                    <verbose>false</verbose>
+                    <addSvnKeyWords>false</addSvnKeyWords>
+                    <organizationName>Nikolavp</organizationName>
+                    <inceptionYear>2014</inceptionYear>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>first</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <licenseName>apache_v2</licenseName>
+                            <excludes>
+                                <exclude>**/example/**</exclude>
+                                <exclude>src/test/resources/approval/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.0.2</version>
