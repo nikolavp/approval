@@ -83,11 +83,14 @@ note how this is different from :ref:`gs-approvals` - we are building a custom `
 
 Reporter class
 ==============
-Reporters(in lack of better name) are used to prompt the user for approving the result that was given to the :java:ref:`Approval` object. There is a :java:ref:`withReporter` method on :java:ref:`ApprovalBuilder` that allows you to use a custom reporter. We provide some ready to use reporters in the ``Reporters`` class:
+Reporters(in lack of better name) are used to prompt the user for approving the result that was given to the :java:ref:`Approval` object. There is a :java:ref:`withReporter` method on :java:ref:`ApprovalBuilder` that allows you to use a custom reporter. We provide some ready to use reporters in the following classes:
 
-* :java:ref:`console` - this uses :program:`cat` and :program:`diff` to report the first result or the differences on the console
-* :java:ref:`gvim` - this uses :program:`gvim` and :program:`gvimdiff` to report the first result or the differences in gvim(our favourite editor)
-* :java:ref:`gedit` - this uses :program:`gedit` to report the first result. Sadly on differences it just opens two tabs :(
+* :java:ref:`Reporters` - this factory class contains cross platform programs/reporters. Here you will find things like :java:ref:`gvim`, :java:ref:`console`.
+* :java:ref:`WindowsReporters` - this factory class contains Windows programs/reporters. Here you will find things like :java:ref:`notepadPlusPlus`, :java:ref:`beyondCompare`, :java:ref:`tortoiseText`.
+* :java:ref:`MacOSReporters` - this factory class contains MacOS programs/reporters. Here you will find things like :java:ref:`diffMerge`, :java:ref:`ksdiff`, etc.
+
+.. note::
+    Sadly I am unable to properly test the windows and macOS reporters because I mostly have access to Linux machines. If you find a problem, blame it on me.
 
 .. _gs-converter:
 

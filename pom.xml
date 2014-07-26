@@ -98,10 +98,10 @@
                 <configuration>
                     <instrumentation>
                         <ignores>
-                            <ignore>com.nikolavp.approval.reporters.Reporters</ignore>
+                            <ignore>com.nikolavp.approval.reporters.*Reporters</ignore>
                         </ignores>
                         <excludes>
-                            <exclude>com/nikolavp/approval/reporters/Reporters.class</exclude>
+                            <exclude>com/nikolavp/approval/reporters/*Reporters.class</exclude>
                         </excludes>
                     </instrumentation>
                     <check>

@@ -19,10 +19,8 @@ There is an older implementation of the approval tests idea at https://github.co
 
 Things we will implement and are still missing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-* NotePadLancher reporter - this should be a one liner
 * ImageWebReporter reporter - we should bring support for web reporter abstraction
 * ImageReporter reporter - we should have this as a FirstWorkingReporter
-* DelayedClipboardReporter or ClipboardReporter - those look almost the same
 * FileLaunherReporter - launch the file. This should use the windows and unix proper commands
   
   'if (File.separatorChar == '\\')
@@ -35,6 +33,3 @@ Things we will implement and are still missing
     }'
 
     use xdg-open on Linux
-
-All reporters from https://github.com/approvals/ApprovalTests.Java/tree/master/java/org/approvaltests/reporters/macosx
-All reporters from https://github.com/approvals/ApprovalTests.Java/tree/master/java/org/approvaltests/reporters/windows
