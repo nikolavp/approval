@@ -69,8 +69,9 @@ public class SwingInteractiveReporter implements Reporter {
         interactWithUser(fileForApproval.toPath(), fileForVerification.toPath());
     }
 
+
     private void interactWithUser(Path approvalPath, Path filePath) {
-        if (GraphicsEnvironment.isHeadless()) {
+        if (isHeadless()) {
             return;
         }
         final int wasTheResultOK = promptUser();
@@ -85,6 +86,10 @@ public class SwingInteractiveReporter implements Reporter {
             throw new AssertionError("Result was NOT OK");
         }
 
+    }
+
+    boolean isHeadless() {
+        return GraphicsEnvironment.isHeadless();
     }
 
     int promptUser() {

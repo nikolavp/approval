@@ -60,6 +60,7 @@ public class SwingInteractiveReporterTest {
     @Before
     public void initSwingReporter() {
         interactiveReporter = Mockito.spy(new SwingInteractiveReporter(reporter, fileSystemUtils));
+        doReturn(false).when(interactiveReporter).isHeadless();
     }
 
     @Test(expected = AssertionError.class)
@@ -134,5 +135,17 @@ public class SwingInteractiveReporterTest {
         assertThat(interactiveReporter.canApprove(testFile.file()), equalTo(true));
     }
 
+    @Test
+    public void shouldNotCallSwingIfInHeadlessMode() throws Exception {
+        //assign
+        doThrow(new AssertionError("error")).when(interactiveReporter).promptUser();
+        doReturn(true).when(interactiveReporter).isHeadless();
+
+        //act
+        interactiveReporter.approveNew(com.nikolavp.approval.TestUtils.RAW_VALUE,
+                TestUtils.forApproval(testFile),
+                testFile.file()
+        );
+    }
 
 }
