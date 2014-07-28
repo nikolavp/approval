@@ -23,6 +23,7 @@ package com.nikolavp.approval;
 import com.nikolavp.approval.converters.Converter;
 import com.nikolavp.approval.converters.Converters;
 import com.nikolavp.approval.converters.DefaultConverter;
+import com.nikolavp.approval.example.Entity;
 import com.nikolavp.approval.utils.FileSystemUtils;
 import org.junit.Rule;
 import org.junit.Test;

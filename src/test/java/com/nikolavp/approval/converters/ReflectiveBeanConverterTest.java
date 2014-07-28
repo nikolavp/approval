@@ -20,7 +20,7 @@ package com.nikolavp.approval.converters;
  * #L%
  */
 
-import com.nikolavp.approval.Entity;
+import com.nikolavp.approval.example.Entity;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;

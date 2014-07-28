@@ -1,8 +1,6 @@
 package com.nikolavp.approval.example;
 
 import com.nikolavp.approval.Approval;
-import com.nikolavp.approval.Entity;
-import com.nikolavp.approval.EntityConverter;
 import com.nikolavp.approval.reporters.Reporters;
 import org.junit.Test;
 

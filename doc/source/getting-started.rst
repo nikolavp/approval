@@ -98,12 +98,12 @@ Converter
 =========
 Converters are objects that are responsible for serializing objects to raw form(currently byte[]). This interface allows you to create a custom converter for your custom objects and reuse the approval process in the library. We have converters for all primitive types, String and their array variants. Of course providing a converter for your custom object is dead easy. Let's say you have a custom entity model class that you are going to use for verifications in your tests:
 
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/Entity.java
+.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/Entity.java
     :language: java
 
 Here is a possible simple converter for the class:
 
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/EntityConverter.java
+.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/EntityConverter.java
     :language: java
 
 
@@ -132,7 +132,7 @@ You have the following class containing two verifications:
 
 now if you want to add another approval test you will need to write the same destination directory for the approval path again. You can of course write a private static method that does the mapping for you but we can do better with PathMappers:
 
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/PathMappersExample.java
+.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/PathMappersExampleImproved.java
 
 we abstracted the common parent directory with the help of the :java:ref:`ParentPathMapper` class. We provide other path mapper as part of the library that you can use:
 
