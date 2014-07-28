@@ -42,7 +42,7 @@ public class ReflectiveBeanConverterTest {
         byte[] rawForm = converter.getRawForm(new Entity("my simple name", 1000));
 
         //assert
-        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("name = my simple name\nage = 1000\n"));
+        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("name = my simple name\nage = 1000\n\n"));
     }
 
     @Test
@@ -54,6 +54,6 @@ public class ReflectiveBeanConverterTest {
         byte[] rawForm = converter.getRawForm(new Entity(null, 1000));
 
         //assert
-        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("age = 1000\n"));
+        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("age = 1000\n\n"));
     }
 }

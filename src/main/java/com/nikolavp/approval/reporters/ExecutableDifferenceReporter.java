@@ -51,28 +51,43 @@ public class ExecutableDifferenceReporter implements Reporter {
         this.diffCommand = diffCommand;
     }
 
+    protected String getDiffCommand() {
+        return diffCommand;
+    }
+
+    protected String getApprovalCommand() {
+        return approvalCommand;
+    }
+
     @Override
     public void notTheSame(byte[] oldValue, File fileForVerification, byte[] newValue, File fileForApproval) {
 
         try {
-            execute(diffCommand, fileForApproval.getAbsolutePath(), fileForVerification.getAbsolutePath());
+            execute(buildNotTheSameCommand(fileForVerification, fileForApproval));
         } catch (IOException e) {
             throw new AssertionError("There was a problem while executing %s", e);
         }
     }
 
+    protected String[] buildNotTheSameCommand(File fileForVerification, File fileForApproval) {
+        return new String[]{diffCommand, fileForApproval.getAbsolutePath(), fileForVerification.getAbsolutePath()};
+    }
+
     @Override
-    public boolean approveNew(byte[] value, File approvalDestination, File fileForVerification) {
+    public void approveNew(byte[] value, File approvalDestination, File fileForVerification) {
         try {
-            int processExit = execute(approvalCommand, approvalDestination.getAbsolutePath());
-            if (processExit == 0) {
-                return true;
+            int processExit = execute(buildApproveNewCommand(approvalDestination, fileForVerification));
+            if (processExit != 0) {
+                throw new AssertionError(String.format("Command %s returned an error exit code!", approvalCommand));
             }
 
         } catch (IOException e) {
             throw new AssertionError(String.format("There was a problem while executing %s", approvalCommand), e);
         }
-        return false;
+    }
+
+    protected String[] buildApproveNewCommand(File approvalDestination, File fileForVerification) {
+        return new String[]{approvalCommand, approvalDestination.getAbsolutePath(), fileForVerification.getAbsolutePath()};
     }
 
     @Override

@@ -47,13 +47,15 @@ public class ExecutableDifferenceReporterTest {
 
     public static final int ERROR_EXIT_CODE = 2;
     public static final int OK_CODE = 0;
+    public static final String GVIM_EXECUTABLE = "gvim -f";
+    public static final String GDIFFVIM_EXECUTABLE = "gvimdiff -f";
     @Rule
     public TestTempFile testFile = new TestTempFile();
     private ExecutableDifferenceReporter executableDifferenceReporter;
 
     @Before
     public void setupMocks() {
-        executableDifferenceReporter = Mockito.spy(new ExecutableDifferenceReporter("gvim", "gvimdiff"));
+        executableDifferenceReporter = Mockito.spy(new ExecutableDifferenceReporter(GVIM_EXECUTABLE, GDIFFVIM_EXECUTABLE));
     }
 
     @Test(expected = AssertionError.class)
@@ -64,14 +66,17 @@ public class ExecutableDifferenceReporterTest {
     }
 
     @Test
-    public void shouldReturnFalseIfCommandThatWasExecutedReturnedBadExitCode() throws Exception {
+    public void shouldThrowAnExceptionIfExecutableReturdErrorCode() throws Exception {
         for(int exitCode : new int[] {ERROR_EXIT_CODE, -ERROR_EXIT_CODE}) {
             Process process = Mockito.mock(Process.class);
             when(process.waitFor()).thenReturn(exitCode);
-            doReturn(process).when(executableDifferenceReporter).startProcess("gvim", forApproval(testFile).getAbsolutePath());
-
-            boolean approved = executableDifferenceReporter.approveNew("test content".getBytes(StandardCharsets.UTF_8), forApproval(testFile), testFile.file());
-            Assert.assertThat(approved, CoreMatchers.is(false));
+            doReturn(process).when(executableDifferenceReporter).startProcess(GVIM_EXECUTABLE, forApproval(testFile).getAbsolutePath(), testFile.file().getAbsolutePath());
+            try {
+                executableDifferenceReporter.approveNew("test content".getBytes(StandardCharsets.UTF_8), forApproval(testFile), testFile.file());
+                Assert.fail("Should throw an exception");
+            } catch (AssertionError error) {
+                Assert.assertTrue(true);
+            }
         }
     }
 
@@ -81,20 +86,19 @@ public class ExecutableDifferenceReporterTest {
         Process process = Mockito.mock(Process.class);
         when(process.waitFor()).thenThrow(new InterruptedException("test exception"));
 
-        doReturn(process).when(executableDifferenceReporter).startProcess("gvim", forApproval(testFile).getAbsolutePath());
+        doReturn(process).when(executableDifferenceReporter).startProcess(GVIM_EXECUTABLE, forApproval(testFile).getAbsolutePath(), testFile.file().getAbsolutePath());
 
         //act
         executableDifferenceReporter.approveNew(RAW_VALUE, forApproval(testFile), testFile.file());
     }
 
     @Test
-    public void shouldReturnTrueIfCommandThatWasExecutedExitedWithNonErrorValue() throws Exception {
+    public void shouldNotThrowIfReporterExecutableExecutedExitedWithNonErrorValue() throws Exception {
         Process process = Mockito.mock(Process.class);
         when(process.exitValue()).thenReturn(OK_CODE);
-        doReturn(process).when(executableDifferenceReporter).startProcess("gvim", forApproval(testFile).getAbsolutePath());
+        doReturn(process).when(executableDifferenceReporter).startProcess(GVIM_EXECUTABLE, forApproval(testFile).getAbsolutePath(), testFile.file().getAbsolutePath());
 
-        boolean approved = executableDifferenceReporter.approveNew("test content".getBytes(StandardCharsets.UTF_8), forApproval(testFile), testFile.file());
-        Assert.assertThat(approved, CoreMatchers.is(true));
+        executableDifferenceReporter.approveNew("test content".getBytes(StandardCharsets.UTF_8), forApproval(testFile), testFile.file());
     }
 
     @Test(expected = AssertionError.class)
@@ -105,7 +109,7 @@ public class ExecutableDifferenceReporterTest {
 
     @Test
     public void shouldBuildTheCommandLineProperlyIfInitialCommandsHaveArguments() throws Exception {
-        List<String> cmd = ExecutableDifferenceReporter.buildCommandline("gvim -f", "test");
+        List<String> cmd = ExecutableDifferenceReporter.buildCommandline(GVIM_EXECUTABLE, "test");
         Assert.assertThat(cmd.size(), CoreMatchers.equalTo(3));
         Assert.assertThat(cmd.get(1), CoreMatchers.equalTo("-f"));
     }
@@ -117,7 +121,7 @@ public class ExecutableDifferenceReporterTest {
         doReturn(process).when(executableDifferenceReporter).startProcess(Mockito.<String>anyVararg());
         executableDifferenceReporter.notTheSame(RAW_VALUE, testFile.file(), (TestUtils.VALUE + " difference ").getBytes(StandardCharsets.UTF_8), forApproval(testFile));
 
-        verify(executableDifferenceReporter).startProcess("gvimdiff", forApproval(testFile).getAbsolutePath(), testFile.file().getAbsolutePath());
+        verify(executableDifferenceReporter).startProcess(GDIFFVIM_EXECUTABLE, forApproval(testFile).getAbsolutePath(), testFile.file().getAbsolutePath());
     }
 
     @Test(expected = IOException.class)

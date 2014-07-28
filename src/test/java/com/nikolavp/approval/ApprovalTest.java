@@ -23,6 +23,7 @@ package com.nikolavp.approval;
 import com.nikolavp.approval.converters.Converter;
 import com.nikolavp.approval.converters.Converters;
 import com.nikolavp.approval.converters.DefaultConverter;
+import com.nikolavp.approval.utils.FileSystemUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,15 +87,6 @@ public class ApprovalTest {
     }
 
     @Test(expected = AssertionError.class)
-    public void shouldThrowAssertionError_IfCannotMoveApprovalFile() throws Exception {
-        //arrange
-        doThrow(new IOException("test error moving")).when(fileSystemUtils).move(any(Path.class), any(Path.class));
-        when(reporter.approveNew(any(byte[].class), any(File.class), any(File.class))).thenReturn(true);
-
-        new Approval<>(reporter, new DefaultConverter(), null, fileSystemUtils).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
-    }
-
-    @Test(expected = AssertionError.class)
     public void shouldThrowAssertionErrorIfCannotReadOldFile() throws Exception {
         //arrange
         when(fileSystemUtils.readFully(any(Path.class))).thenThrow(new IOException("read test exception"));
@@ -114,23 +106,6 @@ public class ApprovalTest {
     }
 
     @Test
-    public void shouldMoveCreatedFileIfReporterAcceptsIt() throws Exception {
-        //assign
-        when(reporter.approveNew(Mockito.any(byte[].class), any(File.class), Mockito.any(File.class))).thenReturn(true);
-
-        //act
-        new Approval<>(reporter, new DefaultConverter(), null).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
-
-        //assert
-        assertThat(testFile.file().exists(), is(true));
-        File fileForApproval = TestUtils.forApproval(testFile);
-        assertThat(fileForApproval.exists(), is(false));
-        assertThat(getFileContent(testFile.file()), equalTo(TestUtils.RAW_VALUE));
-        verify(reporter).approveNew(TestUtils.RAW_VALUE, TestUtils.forApproval(testFile), testFile.file());
-        Mockito.verifyNoMoreInteractions(reporter);
-    }
-
-    @Test
     public void shouldCallTheReporterIfAnOldFileExistsButIsNotTheSame() throws Exception{
         String valueWithDifference = TestUtils.VALUE + "difference";
         Files.write(testFile.file().toPath(), valueWithDifference.getBytes(StandardCharsets.UTF_8));
@@ -147,16 +122,7 @@ public class ApprovalTest {
         new Approval<>(reporter, new DefaultConverter(), null).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
         Mockito.verifyNoMoreInteractions(reporter);
     }
-    
-    @Test(expected = AssertionError.class)
-    public void shouldThrowAssertionErrorOnNonVerifiedFile() throws Exception {
-        //assign
-        when(reporter.approveNew(any(byte[].class), any(File.class), any(File.class))).thenReturn(false);
 
-        //act
-        new Approval<>(reporter, new DefaultConverter(), null).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
-    }
-    
     @Test
     public void shouldBeAbleToApproveCustomTypes() throws Exception {
         //assign
@@ -166,7 +132,7 @@ public class ApprovalTest {
         byte[] rawBytes = "test".getBytes(StandardCharsets.UTF_8);
         when(converter.getRawForm(testEntity)).thenReturn(rawBytes);
         File fileForApproval = TestUtils.forApproval(testFile);
-        when(reporter.approveNew(rawBytes, fileForApproval, testFile.file())).thenReturn(true);
+        reporter.approveNew(rawBytes, fileForApproval, testFile.file());
 
         //act
         new Approval<>(reporter, converter, null, fileSystemUtils).verify(testEntity, testFile.file().toPath());
@@ -179,7 +145,7 @@ public class ApprovalTest {
     public void shouldCreateParentDirectoryForPathIfItDoesntExistAndThrowExceptionOnErrors() throws Exception {
         //assign
         final File testFileInTemporaryDir = new File(testFile.file(), "test.txt");
-        when(reporter.approveNew(any(byte[].class), any(File.class), any(File.class))).thenReturn(true);
+        reporter.approveNew(any(byte[].class), any(File.class), any(File.class));
         doThrow(new IOException("test exception")).when(fileSystemUtils).createDirectories(Mockito.any(File.class));
 
         //act
@@ -195,7 +161,7 @@ public class ApprovalTest {
         final Path path = Paths.get("parent", "subpath");
         //noinspection unchecked
         when(pathMapper.getPath(any(), any(Path.class))).thenReturn(path);
-        when(reporter.approveNew(any(byte[].class), any(File.class), any(File.class))).thenReturn(true);
+        reporter.approveNew(any(byte[].class), any(File.class), any(File.class));
 
         //act
         new Approval<>(reporter, new DefaultConverter(), pathMapper, fileSystemUtils).verify(TestUtils.RAW_VALUE, testFile.path());

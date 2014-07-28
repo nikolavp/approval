@@ -21,12 +21,12 @@ package com.nikolavp.approval.reporters;
  */
 
 import com.nikolavp.approval.Approval;
+import com.nikolavp.approval.pathmappers.ParentPathMapper;
 import org.junit.Assume;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.awt.*;
-import java.nio.file.FileSystems;
+import java.awt.GraphicsEnvironment;
+import java.nio.file.Paths;
 
 /**
  *
@@ -34,28 +34,36 @@ import java.nio.file.FileSystems;
  * Date: 26/02/14
  * Time: 14:28
  */
-@Ignore
+@org.junit.Ignore
 public class ReportersExamplesIT {
 
     @Test
     public void testGvimApprovalProcess() throws Exception {
-        Assume.assumeTrue(Desktop.isDesktopSupported());
-        Approval<String> approval = Approval.of(String.class).withReporter(Reporters.gvim()).build();
+        Assume.assumeFalse(GraphicsEnvironment.isHeadless());
+        Approval<String> approval = Approval.of(String.class)
+                .withPathMapper(new ParentPathMapper<String>(Paths.get("target", "verifications")))
+                .withReporter(Reporters.gvim()).build();
 
-        approval.verify("some test content\n", FileSystems.getDefault().getPath("target", "verifications", "testGvimApprovalProcess.txt"));
+        approval.verify("some test content\n", Paths.get("target", "verifications", "testGvimApprovalProcess.txt"));
     }
 
     @Test
     public void testConsoleApprovalProcess() throws Exception {
-        Assume.assumeTrue(Desktop.isDesktopSupported());
-        Approval<String> approval = Approval.of(String.class).withReporter(Reporters.console()).build();
-        approval.verify("some test content\n", FileSystems.getDefault().getPath("target", "verifications", "testConsoleApprovalProcess.txt"));
+        Assume.assumeFalse(GraphicsEnvironment.isHeadless());
+        Approval<String> approval = Approval.of(String.class)
+                .withPathMapper(new ParentPathMapper<String>(Paths.get("target", "verifications")))
+                .withReporter(Reporters.console())
+                .build();
+        approval.verify("some test content\n", Paths.get("target", "verifications", "testConsoleApprovalProcess.txt"));
     }
 
     @Test
     public void testGeditApprovalProcess() throws Exception {
-        Assume.assumeTrue(Desktop.isDesktopSupported());
-        Approval<String> approval = Approval.of(String.class).withReporter (Reporters.gedit()).build();
-        approval.verify("some test content\n", FileSystems.getDefault().getPath("target", "verifications", "testGeditApprovalProcess.txt"));
+        Assume.assumeFalse(GraphicsEnvironment.isHeadless());
+        Approval<String> approval = Approval.of(String.class)
+                .withPathMapper(new ParentPathMapper<String>(Paths.get("target", "verifications")))
+                .withReporter(Reporters.gedit())
+                .build();
+        approval.verify("some test content\n", Paths.get("target", "verifications", "testGeditApprovalProcess.txt"));
     }
 }

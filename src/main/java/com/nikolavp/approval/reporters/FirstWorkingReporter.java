@@ -47,10 +47,11 @@ class FirstWorkingReporter implements Reporter {
     }
 
     @Override
-    public boolean approveNew(byte[] value, File fileForApproval, File fileForVerification) {
+    public void approveNew(byte[] value, File fileForApproval, File fileForVerification) {
         for (Reporter other : others) {
             if (other.canApprove(fileForApproval)) {
-                return other.approveNew(value, fileForVerification, fileForApproval);
+                other.approveNew(value, fileForVerification, fileForApproval);
+                return;
             }
         }
         throw new IllegalStateException("This should never happen. Can approve was not called?!");

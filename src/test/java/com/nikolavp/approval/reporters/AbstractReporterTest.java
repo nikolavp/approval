@@ -38,8 +38,7 @@ public class AbstractReporterTest {
             }
 
             @Override
-            public boolean approveNew(byte[] value, File fileForApproval, File fileForVerification) {
-                return false;
+            public void approveNew(byte[] value, File fileForApproval, File fileForVerification) {
             }
 
             @Override

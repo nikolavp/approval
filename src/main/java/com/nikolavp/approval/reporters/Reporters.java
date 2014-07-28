@@ -22,6 +22,8 @@ package com.nikolavp.approval.reporters;
 
 import com.nikolavp.approval.Reporter;
 
+import java.io.File;
+
 /**
  * Created with IntelliJ IDEA.
  * User: nikolavp
@@ -34,9 +36,19 @@ public final class Reporters {
 
     }
 
-    private static final ExecutableDifferenceReporter VIM_INSTANCE = new ExecutableDifferenceReporter("gvim -f", "gvimdiff -f");
-    private static final ExecutableDifferenceReporter GEDIT = new ExecutableDifferenceReporter("gedit", "gedit");
-    private static final ExecutableDifferenceReporter CONSOLE_REPORTER_INSTANCE = new ExecutableDifferenceReporter("cat", "diff -u");
+    private static final Reporter VIM_INSTANCE = new ExecutableDifferenceReporter("gvimdiff -f", "gvimdiff -f");
+    private static final Reporter GEDIT = SwingInteractiveReporter.wrap(new ExecutableDifferenceReporter("gedit -w", "gedit -w") {
+        @Override
+        protected String[] buildApproveNewCommand(File approvalDestination, File fileForVerification) {
+            return new String[] {getApprovalCommand(), approvalDestination.getAbsolutePath()};
+        }
+    });
+    private static final Reporter CONSOLE_REPORTER_INSTANCE = SwingInteractiveReporter.wrap(new ExecutableDifferenceReporter("cat", "diff -u") {
+        @Override
+        protected String[] buildApproveNewCommand(File approvalDestination, File fileForVerification) {
+            return new String[] {getApprovalCommand(), approvalDestination.getAbsolutePath()};
+        }
+    });
 
     /**
      * Creates a convenient gvim reporter.

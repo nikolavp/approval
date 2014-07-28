@@ -1,4 +1,4 @@
-package com.nikolavp.approval;
+package com.nikolavp.approval.utils;
 
 /*
  * #%L
@@ -27,14 +27,14 @@ import java.nio.file.Path;
 import java.util.logging.Logger;
 
 /**
- * A default implementation for {@link FileSystemUtils}.
+ * A default implementation for {@link com.nikolavp.approval.utils.FileSystemUtils}.
  *
  * This one just delegates to methods in {@link Files}.
  * User: nikolavp
  * Date: 27/02/14
  * Time: 12:26
  */
-class DefaultFileSystemUtils implements FileSystemUtils {
+public class DefaultFileSystemUtils implements com.nikolavp.approval.utils.FileSystemUtils {
 
     private static final Logger LOG  = Logger.getLogger(DefaultFileSystemUtils.class.getName());
 

@@ -1,4 +1,4 @@
-package com.nikolavp.approval;
+package com.nikolavp.approval.utils;
 
 /*
  * #%L
@@ -28,13 +28,37 @@ import java.nio.file.Path;
  * This class is mostly used for indirection in the tests. We just don't like static utility classes.
  * Created by ontotext on 2/2/14.
  */
-interface FileSystemUtils {
+public interface FileSystemUtils {
+    /**
+     * Write the byte value to the specified path.
+     * @param path the path
+     * @param value the value
+     * @throws IOException if there was an error while writing the content
+     */
     void write(Path path, byte[] value) throws IOException;
 
+    /**
+     * Read the specified path as byte array.
+     * @param path the path to read
+     * @return the path content
+     * @throws IOException if there was an error while reading the content
+     */
     byte[] readFully(Path path) throws IOException;
 
+    /**
+     * Move a path to another path.
+     * @param path the source
+     * @param filePath the destination
+     * @throws IOException if there was an error while moving the paths
+     */
     void move(Path path, Path filePath) throws IOException;
 
-    void createDirectories(File parentPathDirectory) throws IOException;
+    /**
+     * Create a directory and their parent directories as needed.
+     *
+     * @param directory the directory to create
+     * @throws IOException if there was an error while creating the directories
+     */
+    void createDirectories(File directory) throws IOException;
 
 }

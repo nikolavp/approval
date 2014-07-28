@@ -25,6 +25,6 @@ public class SimpleExampleApprovalTest {
         String actual = SimpleExample.generateHtml(title);
 
         //verify
-        approver.verify(actual, Paths.get("./test.txt"));
+        approver.verify(actual, Paths.get("test.txt"));
     }
 }

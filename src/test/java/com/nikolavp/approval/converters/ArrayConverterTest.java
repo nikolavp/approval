@@ -45,7 +45,7 @@ public class ArrayConverterTest {
         byte[] rawForm = listConverter.getRawForm(strings);
 
         //assert
-        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("[0] = test\n[1] = test\n[2] = test\n"));
+        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("[0] = test\n[1] = test\n[2] = test\n\n"));
         Mockito.verify(other, Mockito.times(3)).getRawForm(Mockito.anyString());
     }
 }

@@ -36,13 +36,13 @@ public class ConvertersTest extends StaticUtilityTestAbstract {
     @Test
     public void shouldJustCallToStringOnPrimitiveTheObject() throws Exception {
         byte[] rawForm = Converters.DOUBLE.getRawForm(1.0D);
-        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("1.0"));
+        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("1.0\n\n"));
     }
 
     @Test
     public void shouldProperlySerializePrimitiveArrays() throws Exception {
         final byte[] rawForm = Converters.BYTE_ARRAY.getRawForm(new byte[]{1, 2, 3});
-        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("[0] = 1\n[1] = 2\n[2] = 3\n"));
+        Assert.assertThat(new String(rawForm, StandardCharsets.UTF_8), CoreMatchers.equalTo("[0] = 1\n[1] = 2\n[2] = 3\n\n"));
     }
     
     @Test

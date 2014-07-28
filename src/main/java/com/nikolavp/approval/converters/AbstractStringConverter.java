@@ -35,9 +35,13 @@ public abstract class AbstractStringConverter<T> extends AbstractConverter<T> {
     @Override
     public final byte[] getRawForm(@Nullable T value) {
         if (value == null) {
-            return "null".getBytes(StandardCharsets.UTF_8);
+            return fixAtLeastOneBlankLineAtEOF("null").getBytes(StandardCharsets.UTF_8);
         }
-        return getStringForm(value).getBytes(StandardCharsets.UTF_8);
+        return fixAtLeastOneBlankLineAtEOF(getStringForm(value).trim()).getBytes(StandardCharsets.UTF_8);
+    }
+
+    private String fixAtLeastOneBlankLineAtEOF(String value) {
+        return value.trim() + "\n\n";
     }
 
     /**

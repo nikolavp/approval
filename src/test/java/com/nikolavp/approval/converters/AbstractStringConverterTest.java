@@ -42,7 +42,7 @@ public class AbstractStringConverterTest {
 
     @Test
     public void shouldCallGetStringFormForValidResult() throws Exception {
-        final String testValue = "test1";
+        final String testValue = "test1\n\n";
         final byte[] rawForm = CONVERTER.getRawForm(testValue);
         Assert.assertThat(rawForm, CoreMatchers.equalTo(testValue.getBytes(StandardCharsets.UTF_8)));
     }
@@ -50,6 +50,6 @@ public class AbstractStringConverterTest {
     @Test
     public void shouldReturnTheStringNullAsRawFormOnNullValues() throws Exception {
         final byte[] rawForm = CONVERTER.getRawForm(null);
-        Assert.assertThat(rawForm, CoreMatchers.equalTo("null".getBytes(StandardCharsets.UTF_8)));
+        Assert.assertThat(rawForm, CoreMatchers.equalTo("null\n\n".getBytes(StandardCharsets.UTF_8)));
     }
 }

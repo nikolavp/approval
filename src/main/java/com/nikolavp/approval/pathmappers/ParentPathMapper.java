@@ -45,6 +45,8 @@ import java.nio.file.Path;
  * </pre>
  * <p/>
  * will put the approved value in the file <b>src/test/resources/approval/some_cool_value.txt</b>
+ *
+ * @param <T> the value that will be approved
  */
 public class ParentPathMapper<T> implements PathMapper<T> {
 

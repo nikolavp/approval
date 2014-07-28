@@ -42,7 +42,7 @@ public class Approval<T> {
     private static final Logger LOG  = Logger.getLogger(Approval.class.getName());
     private static final String FOR_APPROVAL_EXTENSION = ".forapproval";
     private final Reporter reporter;
-    private final FileSystemUtils fileSystemReadWriter;
+    private final com.nikolavp.approval.utils.FileSystemUtils fileSystemReadWriter;
     private final Converter<T> converter;
     private PathMapper<T> pathMapper;
 
@@ -53,14 +53,14 @@ public class Approval<T> {
      * @param pathMapper the path mapper that will be used
      */
     Approval(Reporter reporter, Converter<T> converter, @Nullable PathMapper<T> pathMapper) {
-        this(reporter, converter, pathMapper, new DefaultFileSystemUtils());
+        this(reporter, converter, pathMapper, new com.nikolavp.approval.utils.DefaultFileSystemUtils());
     }
 
 
     /**
      * This ctor is for testing only.
      */
-    Approval(Reporter reporter, Converter<T> converter, @Nullable PathMapper<T> pathMapper, FileSystemUtils fileSystemReadWriter) {
+    Approval(Reporter reporter, Converter<T> converter, @Nullable PathMapper<T> pathMapper, com.nikolavp.approval.utils.FileSystemUtils fileSystemReadWriter) {
         this.fileSystemReadWriter = fileSystemReadWriter;
         this.converter = converter;
         this.reporter = reporter;
@@ -169,7 +169,7 @@ public class Approval<T> {
         byte[] rawValue = converter.getRawForm(value);
         if (!file.exists()) {
             LOG.info(file + " didn't exist. You will be asked for approval");
-            handleFirstTimeApproval(file.toPath(), file, approvalPath, rawValue);
+            handleFirstTimeApproval(file, approvalPath, rawValue);
             return;
         }
         try {
@@ -190,22 +190,14 @@ public class Approval<T> {
         //value approved
     }
 
-    private void handleFirstTimeApproval(Path filePath, File file, Path approvalPath, byte[] rawValue) {
+    private void handleFirstTimeApproval(File file, Path approvalPath, byte[] rawValue) {
         try {
             fileSystemReadWriter.write(approvalPath, rawValue);
+            approvalPath.toFile().deleteOnExit();
         } catch (IOException e) {
             throw new AssertionError("Couldn't write file for approval " + approvalPath, e);
         }
-        if (reporter.approveNew(rawValue, approvalPath.toFile(), file)) {
-            try {
-                fileSystemReadWriter.move(approvalPath, filePath);
-            } catch (IOException e) {
-                String errorMessage = String.format("Couldn't move file for approval[%s] to the destination [%s]", approvalPath.toAbsolutePath(), filePath.toAbsolutePath());
-                throw new AssertionError(errorMessage);
-            }
-        } else {
-            throw new AssertionError(String.format("File %s was not approved", approvalPath.toString()));
-        }
+        reporter.approveNew(rawValue, approvalPath.toFile(), file);
     }
 
     private File mapFilePath(@Nullable T value, Path filePath) {

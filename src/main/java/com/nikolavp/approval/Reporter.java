@@ -42,9 +42,8 @@ public interface Reporter {
      * @param value the new value that came from the verification
      * @param fileForApproval the approval file(this contains the value that was passed in)
      * @param fileForVerification the file for the this new approval value  @return true if the new value is approved and false otherwise
-     * @return true if the value was approved and false otherwise
      */
-    boolean approveNew(byte[] value, File fileForApproval, File fileForVerification);
+    void approveNew(byte[] value, File fileForApproval, File fileForVerification);
 
     /**
      * A method to check if this reporter is supported for the following file type or environment! Reporters are
