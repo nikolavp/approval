@@ -46,7 +46,7 @@ import java.nio.file.Path;
  * <p/>
  * will put the approved value in the file <b>src/test/resources/approval/some_cool_value.txt</b>
  */
-public class ParentPathMapper implements PathMapper {
+public class ParentPathMapper<T> implements PathMapper<T> {
 
     private final Path parentPath;
 
@@ -61,7 +61,7 @@ public class ParentPathMapper implements PathMapper {
 
     @Nonnull
     @Override
-    public Path getPath(@Nullable Object value, Path approvalFilePath) {
+    public Path getPath(@Nullable T value, Path approvalFilePath) {
         return parentPath.resolve(approvalFilePath);
     }
 }

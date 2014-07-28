@@ -218,6 +218,10 @@ public class Approval<T> {
         return file;
     }
 
+    PathMapper<T> getPathMapper() {
+        return pathMapper;
+    }
+
     /**
      * A builder class for approvals. This is used to conveniently build new approvals for a specific type with custom reporters, converters, etc.
      *

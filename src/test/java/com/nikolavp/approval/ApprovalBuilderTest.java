@@ -23,9 +23,12 @@ package com.nikolavp.approval;
 import com.nikolavp.approval.converters.Converter;
 import com.nikolavp.approval.converters.Converters;
 import com.nikolavp.approval.converters.DefaultConverter;
+import com.nikolavp.approval.pathmappers.ParentPathMapper;
 import com.nikolavp.approval.reporters.Reporters;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
+
+import java.nio.file.Paths;
 
 import static org.junit.Assert.assertThat;
 
@@ -105,5 +108,11 @@ public class ApprovalBuilderTest {
         assertThat(build(short[].class).getReporter(), CoreMatchers.equalTo(Reporters.gvim()));
     }
 
-
+    @Test
+    public void shouldUseThePathMapperSet() throws Exception {
+        final PathMapper<short[]> pathMapper = new ParentPathMapper<>(Paths.get("test"));
+        assertThat(Approval.of(short[].class).withReporter(Reporters.gvim())
+                .withPathMapper(pathMapper)
+                .build().getPathMapper(), CoreMatchers.equalTo(pathMapper));
+    }
 }

@@ -33,11 +33,11 @@ public final class WindowsReporters {
 
     }
 
-    private static final ExecutableDifferenceReporter NOTEPAD_PLUS_PLUS = new ExecutableDifferenceReporter("notepad++.exe", "notepad++.exe");
-    private static final ExecutableDifferenceReporter BEYOND_COMPARE = new ExecutableDifferenceReporter("BCompare.exe", "BCompare.exe");
-    private static final ExecutableDifferenceReporter TORTOISE_IMAGE_DIFF = new ExecutableDifferenceReporter("TortoiseIDiff.exe", "TortoiseIDiff.exe");
-    private static final ExecutableDifferenceReporter TORTOISE_TEXT_DIFF = new ExecutableDifferenceReporter("TortoiseMerge.exe", "TortoiseMerge.exe");
-    private static final ExecutableDifferenceReporter WIN_MERGE = new ExecutableDifferenceReporter("WinMergeU.exe", "WinMergeU.exe");
+    private static final ExecutableDifferenceReporter NOTEPAD_PLUS_PLUS = new ExecutableDifferenceReporter("cmd /C notepad++.exe", "cmd /C notepad++.exe");
+    private static final ExecutableDifferenceReporter BEYOND_COMPARE = new ExecutableDifferenceReporter("cmd /C BCompare.exe", "cmd /C BCompare.exe");
+    private static final ExecutableDifferenceReporter TORTOISE_IMAGE_DIFF = new ExecutableDifferenceReporter("cmd /C TortoiseIDiff.exe", "cmd /C TortoiseIDiff.exe");
+    private static final ExecutableDifferenceReporter TORTOISE_TEXT_DIFF = new ExecutableDifferenceReporter("cmd /C TortoiseMerge.exe", "cmd /C TortoiseMerge.exe");
+    private static final ExecutableDifferenceReporter WIN_MERGE = new ExecutableDifferenceReporter("cmd /C WinMergeU.exe", "cmd /C WinMergeU.exe");
 
     /**
      * A reporter that calls <a href="http://notepad-plus-plus.org/">notepad++</a> to show you the results.
