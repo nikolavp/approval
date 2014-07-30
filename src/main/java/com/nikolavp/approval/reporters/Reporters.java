@@ -21,6 +21,7 @@ package com.nikolavp.approval.reporters;
  */
 
 import com.nikolavp.approval.Reporter;
+import com.nikolavp.approval.utils.CrossPlatformCommand;
 
 import java.io.File;
 
@@ -84,6 +85,38 @@ public final class Reporters {
     }
 
     /**
+     * A reporter that launches the file under test. This is useful if you for example are generating an spreadsheet and want to verify it.
+     * @return a reporter that launches the file
+     */
+    public static Reporter fileLauncher() {
+        final String cmd = new CrossPlatformCommand<String>() {
+
+            @Override
+            protected String onWindows() {
+                return "cmd /C start";
+            }
+
+            @Override
+            protected String onMac() {
+                return "open";
+            }
+
+            @Override
+            protected String onUnix() {
+                return "xdg-open";
+            }
+
+        } .execute();
+
+        return SwingInteractiveReporter.wrap(new ExecutableDifferenceReporter(cmd, cmd) {
+            @Override
+            protected String[] buildApproveNewCommand(File approvalDestination, File fileForVerification) {
+                return new String[]{getApprovalCommand(), approvalDestination.getAbsolutePath()};
+            }
+        });
+    }
+
+    /**
      * Get a reporter that will use the first working reporter as per {@link com.nikolavp.approval.Reporter#canApprove}
      * for the reporting.
      *
@@ -93,4 +126,6 @@ public final class Reporters {
     public static Reporter firstWorking(Reporter... others) {
         return new FirstWorkingReporter(others);
     }
+
+
 }

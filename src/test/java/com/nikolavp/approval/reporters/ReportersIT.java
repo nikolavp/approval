@@ -24,7 +24,6 @@ import com.nikolavp.approval.Approval;
 import com.nikolavp.approval.Reporter;
 import com.nikolavp.approval.pathmappers.ParentPathMapper;
 import org.junit.Assume;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -38,7 +37,7 @@ import java.nio.file.Paths;
  * Date: 26/02/14
  * Time: 14:28
  */
-@Ignore
+//@Ignore
 public class ReportersIT {
 
     public static final ParentPathMapper<String> MAPPER = new ParentPathMapper<String>(Paths.get("target", "verifications", ReportersIT.class.getName()));
@@ -61,6 +60,11 @@ public class ReportersIT {
     public void testGeditApprovalProcess() throws Exception {
         testReporter(Reporters.gedit());
     }
+    
+    @Test
+    public void testFileLauncherProcess() throws Exception {
+        testReporter(Reporters.fileLauncher());
+    }
 
     private void testReporter(Reporter reporter) {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
@@ -69,5 +73,4 @@ public class ReportersIT {
                 .withReporter(reporter).build();
         approval.verify("some test content\n", Paths.get(testName.getMethodName()));
     }
-
 }
