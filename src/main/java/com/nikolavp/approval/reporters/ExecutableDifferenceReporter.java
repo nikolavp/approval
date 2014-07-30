@@ -104,6 +104,17 @@ public class ExecutableDifferenceReporter implements Reporter {
     }
 
     Process startProcess(String... cmdParts) throws IOException {
+        return runProcess(cmdParts);
+    }
+
+    /**
+     * Execute a command with the following arguments.
+     *
+     * @param cmdParts the command parts
+     * @return the process for the command that was started
+     * @throws IOException if there were any I/O errors
+     */
+    public static Process runProcess(String... cmdParts) throws IOException {
         return new ProcessBuilder(buildCommandline(cmdParts))
                 .inheritIO()
                 .start();

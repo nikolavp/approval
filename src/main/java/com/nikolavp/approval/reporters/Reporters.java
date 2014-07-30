@@ -24,6 +24,7 @@ import com.nikolavp.approval.Reporter;
 import com.nikolavp.approval.utils.CrossPlatformCommand;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -112,6 +113,47 @@ public final class Reporters {
             @Override
             protected String[] buildApproveNewCommand(File approvalDestination, File fileForVerification) {
                 return new String[]{getApprovalCommand(), approvalDestination.getAbsolutePath()};
+            }
+        });
+    }
+
+    /**
+     * A reporter that compares images. Currently this uses <a href="http://www.imagemagick.org/script/binary-releases.php">imagemagick</a>
+     * for comparison. If you only want to view the new image on first approval and when there is a difference, then you better use the {@link #fileLauncher()}
+     * reporter which will do this for you.
+     * @return the reporter that uses ImagemMagick for comparison
+     */
+    public static Reporter imageMagick() {
+
+        return SwingInteractiveReporter.wrap(new Reporter() {
+
+            private final Reporter other = fileLauncher();
+
+            @Override
+            public void notTheSame(byte[] oldValue, File fileForVerification, byte[] newValue, File fileForApproval) {
+                try {
+                    final File compareResult = File.createTempFile("compareResult", fileForVerification.getName());
+                    final Process compare = ExecutableDifferenceReporter.runProcess("compare", fileForApproval.getCanonicalPath(), fileForVerification.getAbsolutePath(), compareResult.getAbsolutePath());
+                    final int result = compare.waitFor();
+                    if (result != 0) {
+                        throw new IllegalStateException("Couldn't execute compare!");
+                    }
+                    other.approveNew(/* unused */newValue, /* only used value*/compareResult, /* unused */fileForVerification);
+                } catch (IOException e) {
+                    throw new AssertionError("Couldn't create file!", e);
+                } catch (InterruptedException e) {
+                    throw new AssertionError("Couldn't create file!", e);
+                }
+            }
+
+            @Override
+            public void approveNew(byte[] value, File fileForApproval, File fileForVerification) {
+                other.approveNew(value, fileForApproval, fileForVerification);
+            }
+
+            @Override
+            public boolean canApprove(File fileForApproval) {
+                return other.canApprove(fileForApproval);
             }
         });
     }

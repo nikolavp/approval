@@ -20,15 +20,19 @@ package com.nikolavp.approval.reporters;
  * #L%
  */
 
+import com.google.common.io.Resources;
 import com.nikolavp.approval.Approval;
 import com.nikolavp.approval.Reporter;
 import com.nikolavp.approval.pathmappers.ParentPathMapper;
 import org.junit.Assume;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
 import java.awt.GraphicsEnvironment;
+import java.io.File;
+import java.net.URL;
 import java.nio.file.Paths;
 
 /**
@@ -37,7 +41,7 @@ import java.nio.file.Paths;
  * Date: 26/02/14
  * Time: 14:28
  */
-//@Ignore
+@Ignore
 public class ReportersIT {
 
     public static final ParentPathMapper<String> MAPPER = new ParentPathMapper<String>(Paths.get("target", "verifications", ReportersIT.class.getName()));
@@ -60,10 +64,35 @@ public class ReportersIT {
     public void testGeditApprovalProcess() throws Exception {
         testReporter(Reporters.gedit());
     }
-    
+
     @Test
     public void testFileLauncherProcess() throws Exception {
         testReporter(Reporters.fileLauncher());
+    }
+
+    @Test
+    public void testImageMagickReporter() throws Exception {
+        final URL newImage = Resources.getResource("images/new-image.gif");
+        final URL oldImage = Resources.getResource("approvals/images/resulting-image.gif");
+
+        final byte[] newValue = Resources.toByteArray(newImage);
+        final File fileForVerification = MAPPER.getPath(null, Paths.get("image-dummy")).toFile();
+        final File parentFile = fileForVerification.getParentFile();
+        if(!parentFile.exists() && !parentFile.mkdirs()) {
+            throw new AssertionError("Couldn't create parent");
+        }
+//        Reporters.imageMagick().approveNew(
+//                newValue,
+//                new File(newImage.toURI()),
+//                fileForVerification
+//        );
+
+        Reporters.imageMagick().notTheSame(
+                Resources.toByteArray(oldImage),
+                new File(oldImage.toURI()),
+                newValue,
+                new File(newImage.toURI())
+        );
     }
 
     private void testReporter(Reporter reporter) {

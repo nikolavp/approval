@@ -80,7 +80,7 @@ public class SwingInteractiveReporter implements Reporter {
                 fileSystemReadWriter.move(approvalPath, filePath);
             } catch (IOException e) {
                 String errorMessage = String.format("Couldn't move file for approval[%s] to the destination [%s]", approvalPath.toAbsolutePath(), filePath.toAbsolutePath());
-                throw new AssertionError(errorMessage);
+                throw new AssertionError(errorMessage, e);
             }
         } else {
             throw new AssertionError("Result was NOT OK");
