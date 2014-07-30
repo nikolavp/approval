@@ -1,4 +1,4 @@
-package com.nikolavp.approval;
+package com.nikolavp.approval.utils;
 
 /*
  * #%L
@@ -20,7 +20,6 @@ package com.nikolavp.approval;
  * #L%
  */
 
-import com.nikolavp.approval.utils.DefaultFileSystemUtils;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Rule;

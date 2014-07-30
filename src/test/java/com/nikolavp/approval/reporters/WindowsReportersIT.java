@@ -24,6 +24,7 @@ import com.nikolavp.approval.Approval;
 import com.nikolavp.approval.Reporter;
 import com.nikolavp.approval.pathmappers.ParentPathMapper;
 import org.junit.Assume;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -31,7 +32,7 @@ import org.junit.rules.TestName;
 import java.awt.GraphicsEnvironment;
 import java.nio.file.Paths;
 
-//@Ignore
+@Ignore
 public class WindowsReportersIT {
 
     public static final ParentPathMapper<String> MAPPER = new ParentPathMapper<String>(Paths.get("target", "verifications", WindowsReportersIT.class.getName()));
