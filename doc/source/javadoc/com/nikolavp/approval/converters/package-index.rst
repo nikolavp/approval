@@ -6,6 +6,8 @@ com.nikolavp.approval.converters
 .. toctree::
    :maxdepth: 1
 
+   AbstractConverter
+   AbstractStringConverter
    ArrayConverter
    Converter
    Converters

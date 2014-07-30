@@ -15,7 +15,7 @@ Methods
 approveNew
 ^^^^^^^^^^
 
-.. java:method::  boolean approveNew(byte[] value, File fileForApproval, File fileForVerification)
+.. java:method::  void approveNew(byte[] value, File fileForApproval, File fileForVerification)
    :outertype: Reporter
 
    Called by an \ :java:ref:`com.nikolavp.approval.Approval`\  object when a value for verification is produced but no old.
@@ -23,7 +23,6 @@ approveNew
    :param value: the new value that came from the verification
    :param fileForApproval: the approval file(this contains the value that was passed in)
    :param fileForVerification: the file for the this new approval value @return true if the new value is approved and false otherwise
-   :return: true if the value was approved and false otherwise
 
 canApprove
 ^^^^^^^^^^

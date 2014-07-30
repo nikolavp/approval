@@ -16,6 +16,4 @@ public class EntityConverterExample {
                 .build();
         approver.verify(entity, Paths.get("src/test/resources/approval/example/entity.verified"));
     }
-
-
 }

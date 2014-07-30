@@ -1,13 +1,9 @@
 package com.nikolavp.approval.example;
 
-/**
- * User: nikolavp
- * Date: 19/03/14
- * Time: 19:16
- */
 public class SimpleExample {
     public static String generateHtml(String pageTitle) {
-        return String.format("<!DOCTYPE html>\n" +
+        return String.format(
+                "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
                 "   <title>%s</title>\n" +

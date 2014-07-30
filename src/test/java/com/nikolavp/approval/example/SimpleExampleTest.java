@@ -5,11 +5,6 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-/**
- * User: nikolavp
- * Date: 19/03/14
- * Time: 19:17
- */
 public class SimpleExampleTest {
 
     @Test

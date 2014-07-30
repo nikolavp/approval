@@ -4,6 +4,14 @@
 
 .. java:import:: java.io IOException
 
+.. java:import:: java.util ArrayList
+
+.. java:import:: java.util Arrays
+
+.. java:import:: java.util Collections
+
+.. java:import:: java.util List
+
 ExecutableDifferenceReporter
 ============================
 
@@ -37,7 +45,25 @@ Methods
 approveNew
 ^^^^^^^^^^
 
-.. java:method:: @Override public boolean approveNew(byte[] value, File approvalDestination, File fileForVerification)
+.. java:method:: @Override public void approveNew(byte[] value, File approvalDestination, File fileForVerification)
+   :outertype: ExecutableDifferenceReporter
+
+buildApproveNewCommand
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected String[] buildApproveNewCommand(File approvalDestination, File fileForVerification)
+   :outertype: ExecutableDifferenceReporter
+
+buildCommandline
+^^^^^^^^^^^^^^^^
+
+.. java:method:: static List<String> buildCommandline(String... cmdParts)
+   :outertype: ExecutableDifferenceReporter
+
+buildNotTheSameCommand
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected String[] buildNotTheSameCommand(File fileForVerification, File fileForApproval)
    :outertype: ExecutableDifferenceReporter
 
 canApprove
@@ -46,11 +72,35 @@ canApprove
 .. java:method:: @Override public boolean canApprove(File fileForApproval)
    :outertype: ExecutableDifferenceReporter
 
+getApprovalCommand
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected String getApprovalCommand()
+   :outertype: ExecutableDifferenceReporter
+
+getDiffCommand
+^^^^^^^^^^^^^^
+
+.. java:method:: protected String getDiffCommand()
+   :outertype: ExecutableDifferenceReporter
+
 notTheSame
 ^^^^^^^^^^
 
 .. java:method:: @Override public void notTheSame(byte[] oldValue, File fileForVerification, byte[] newValue, File fileForApproval)
    :outertype: ExecutableDifferenceReporter
+
+runProcess
+^^^^^^^^^^
+
+.. java:method:: public static Process runProcess(String... cmdParts) throws IOException
+   :outertype: ExecutableDifferenceReporter
+
+   Execute a command with the following arguments.
+
+   :param cmdParts: the command parts
+   :throws IOException: if there were any I/O errors
+   :return: the process for the command that was started
 
 startProcess
 ^^^^^^^^^^^^

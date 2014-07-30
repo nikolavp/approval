@@ -20,12 +20,10 @@ Approval can be used for verifying objects that require more than a simple asser
 - people use it for TDD but instead of providing the result upfront you just implement the simple possible thing, verify the result and then start improving the implementation.
 
 
-
 .. toctree::
    :maxdepth: 1
 
    getting-started
    manual/index
-   about/index
    faq
    javadoc/packages

@@ -1,3 +1,9 @@
+.. java:import:: javax.annotation Nonnull
+
+.. java:import:: javax.annotation Nullable
+
+.. java:import:: java.nio.charset StandardCharsets
+
 DefaultConverter
 ================
 
@@ -13,6 +19,6 @@ Methods
 getRawForm
 ^^^^^^^^^^
 
-.. java:method:: @Override public byte[] getRawForm(byte[] value)
+.. java:method:: @Nonnull @Override public byte[] getRawForm(byte[] value)
    :outertype: DefaultConverter
 

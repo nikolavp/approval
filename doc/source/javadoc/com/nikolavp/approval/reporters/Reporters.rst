@@ -1,5 +1,11 @@
 .. java:import:: com.nikolavp.approval Reporter
 
+.. java:import:: com.nikolavp.approval.utils CrossPlatformCommand
+
+.. java:import:: java.io File
+
+.. java:import:: java.io IOException
+
 Reporters
 =========
 
@@ -21,6 +27,16 @@ console
    Creates a simple reporter that will print/report approvals to the console. This reporter will use convenient command line tools under the hood to only report the changes in finds. This is perfect for batch modes or when you run your build in a CI server
 
    :return: a reporter that uses console unix tools under the hood
+
+fileLauncher
+^^^^^^^^^^^^
+
+.. java:method:: public static Reporter fileLauncher()
+   :outertype: Reporters
+
+   A reporter that launches the file under test. This is useful if you for example are generating an spreadsheet and want to verify it.
+
+   :return: a reporter that launches the file
 
 firstWorking
 ^^^^^^^^^^^^
@@ -52,4 +68,14 @@ gvim
    Creates a convenient gvim reporter. This one will use gvimdiff for difference detection and gvim for approving new files. The proper way to exit vim and not approve the new changes is with ":cq" - just have that in mind!
 
    :return: a reporter that uses vim under the hood
+
+imageMagick
+^^^^^^^^^^^
+
+.. java:method:: public static Reporter imageMagick()
+   :outertype: Reporters
+
+   A reporter that compares images. Currently this uses \ `imagemagick <http://www.imagemagick.org/script/binary-releases.php>`_\  for comparison. If you only want to view the new image on first approval and when there is a difference, then you better use the \ :java:ref:`fileLauncher()`\  reporter which will do this for you.
+
+   :return: the reporter that uses ImagemMagick for comparison
 

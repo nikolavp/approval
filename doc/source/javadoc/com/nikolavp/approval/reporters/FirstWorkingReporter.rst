@@ -10,7 +10,7 @@ FirstWorkingReporter
 
 .. java:type::  class FirstWorkingReporter implements Reporter
 
-   User: nikolavp (Nikola Petrov) Date: 14-7-21 Time: 15:35
+   A reporter that will compose other reporters and use the first one that can approve the objects for verification as per \ :java:ref:`com.nikolavp.approval.Reporter.canApprove(java.io.File)`\ .
 
 Constructors
 ------------
@@ -25,7 +25,7 @@ Methods
 approveNew
 ^^^^^^^^^^
 
-.. java:method:: @Override public boolean approveNew(byte[] value, File fileForApproval, File fileForVerification)
+.. java:method:: @Override public void approveNew(byte[] value, File fileForApproval, File fileForVerification)
    :outertype: FirstWorkingReporter
 
 canApprove

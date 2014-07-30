@@ -1,3 +1,7 @@
+.. java:import:: javax.annotation Nonnull
+
+.. java:import:: javax.annotation Nullable
+
 Converter
 =========
 
@@ -15,7 +19,7 @@ Methods
 getRawForm
 ^^^^^^^^^^
 
-.. java:method::  byte[] getRawForm(T value)
+.. java:method:: @Nonnull  byte[] getRawForm(T value)
    :outertype: Converter
 
    Gets the raw representation of the type object. This representation will be written in the files you are going to then use in the approval process.

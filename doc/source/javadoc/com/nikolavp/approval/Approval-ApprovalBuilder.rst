@@ -2,6 +2,10 @@
 
 .. java:import:: com.nikolavp.approval.converters Converters
 
+.. java:import:: javax.annotation Nonnull
+
+.. java:import:: javax.annotation Nullable
+
 .. java:import:: java.io File
 
 .. java:import:: java.io IOException
@@ -11,6 +15,8 @@
 .. java:import:: java.nio.file Path
 
 .. java:import:: java.util Arrays
+
+.. java:import:: java.util.logging Logger
 
 Approval.ApprovalBuilder
 ========================
@@ -30,7 +36,7 @@ Methods
 build
 ^^^^^
 
-.. java:method:: public Approval<T> build()
+.. java:method:: @Nonnull public Approval<T> build()
    :outertype: Approval.ApprovalBuilder
 
    Creates a new approval with configuration/options(reporters, converters, etc) that were set for this builder.
@@ -40,7 +46,7 @@ build
 withConveter
 ^^^^^^^^^^^^
 
-.. java:method:: public ApprovalBuilder<T> withConveter(Converter<T> converterToBeUsed)
+.. java:method:: @Nonnull public ApprovalBuilder<T> withConveter(Converter<T> converterToBeUsed)
    :outertype: Approval.ApprovalBuilder
 
    Set the converter that will be used when building new approvals with this builder.
@@ -49,6 +55,17 @@ withConveter
    :return: the same builder for chaining
 
    **See also:** :java:ref:`Converter`
+
+withPathMapper
+^^^^^^^^^^^^^^
+
+.. java:method:: @Nonnull public ApprovalBuilder<T> withPathMapper(PathMapper<T> pathMapperToBeUsed)
+   :outertype: Approval.ApprovalBuilder
+
+   Set a path mapper that will be used when building the path for approval results.
+
+   :param pathMapperToBeUsed: the path mapper
+   :return: the same builder for chaining
 
 withReporter
 ^^^^^^^^^^^^

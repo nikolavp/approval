@@ -33,6 +33,8 @@ import java.nio.file.Path;
  * Time: 11:38
  */
 public final class Approvals {
+    private static Reporter reporter = Reporters.gvim();
+
     private Approvals() {
     }
 
@@ -44,7 +46,7 @@ public final class Approvals {
      */
     public static void verify(int[] ints, Path path) {
         Approval.of(int[].class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(ints, path);
     }
@@ -57,7 +59,7 @@ public final class Approvals {
      */
     public static void verify(byte[] bytes, Path path) {
         Approval.of(byte[].class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(bytes, path);
     }
@@ -70,7 +72,7 @@ public final class Approvals {
      */
     public static void verify(short[] shorts, Path path) {
         Approval.of(short[].class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(shorts, path);
     }
@@ -83,7 +85,7 @@ public final class Approvals {
      */
     public static void verify(long[] longs, Path path) {
         Approval.of(long[].class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(longs, path);
     }
@@ -96,7 +98,7 @@ public final class Approvals {
      */
     public static void verify(float[] floats, Path path) {
         Approval.of(float[].class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(floats, path);
     }
@@ -109,7 +111,7 @@ public final class Approvals {
      */
     public static void verify(double[] doubles, Path path) {
         Approval.of(double[].class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(doubles, path);
     }
@@ -122,7 +124,7 @@ public final class Approvals {
      */
     public static void verify(boolean[] booleans, Path path) {
         Approval.of(boolean[].class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(booleans, path);
     }
@@ -135,7 +137,7 @@ public final class Approvals {
      */
     public static void verify(char[] chars, Path path) {
         Approval.of(char[].class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(chars, path);
     }
@@ -148,7 +150,7 @@ public final class Approvals {
      */
     public static void verify(String[] strings, Path path) {
         Approval.of(String[].class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(strings, path);
     }
@@ -161,7 +163,7 @@ public final class Approvals {
      */
     public static void verify(byte value, Path path) {
         Approval.of(byte.class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(value, path);
     }
@@ -174,7 +176,7 @@ public final class Approvals {
      */
     public static void verify(short value, Path path) {
         Approval.of(short.class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(value, path);
     }
@@ -187,7 +189,7 @@ public final class Approvals {
      */
     public static void verify(int value, Path path) {
         Approval.of(int.class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(value, path);
     }
@@ -200,7 +202,7 @@ public final class Approvals {
      */
     public static void verify(long value, Path path) {
         Approval.of(long.class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(value, path);
     }
@@ -213,7 +215,7 @@ public final class Approvals {
      */
     public static void verify(float value, Path path) {
         Approval.of(float.class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(value, path);
     }
@@ -226,7 +228,7 @@ public final class Approvals {
      */
     public static void verify(double value, Path path) {
         Approval.of(double.class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(value, path);
     }
@@ -239,7 +241,7 @@ public final class Approvals {
      */
     public static void verify(boolean value, Path path) {
         Approval.of(boolean.class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(value, path);
     }
@@ -252,7 +254,7 @@ public final class Approvals {
      */
     public static void verify(char value, Path path) {
         Approval.of(char.class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(value, path);
     }
@@ -265,8 +267,17 @@ public final class Approvals {
      */
     public static void verify(String value, Path path) {
         Approval.of(String.class)
-                .withReporter(Reporters.gvim())
+                .withReporter(reporter)
                 .build()
                 .verify(value, path);
+    }
+
+    /**
+     * Sets the global static reporter that will be used by the utility.
+     *
+     * @param reporterToUse the reporter to use. Please make this portable and use {@link Reporters#firstWorking(Reporter...)}
+     */
+    public static void setReporter(Reporter reporterToUse) {
+        reporter = reporterToUse;
     }
 }

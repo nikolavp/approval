@@ -22,13 +22,14 @@ Just add the ``approval`` library as a dependency:
         <dependency>
             <groupId>com.github.nikolavp</groupId>
             <artifactId>approval</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${approval.version}</version>
         </dependency>
     </dependencies>
 
 
-.. note::
-    Currently there are no stable version but we plan to release our first release soon, stay tuned :)
+.. warning::
+    Make sure you have a ``approval.version`` property declared in your POM with the current version,
+    which is |release|.
 
 How is approval testing different
 =================================
@@ -46,15 +47,12 @@ There are many sources from which you can learn about approval testing(just goog
 
 Approvals utility
 =================
-This is the main starting point of the library. If you want to just approve a primitive object or arrays of primitive object then start here. The following will start the approval process for a ``String`` that ``MyCoolThing`` (our class under test) generated and use ``src/test/resources/approval/string.verified`` for recording/saving the results:
+This is the main starting point of the library. If you want to just approve a primitive object or arrays of primitive object then you are ready to go. The following will start the approval process for a ``String`` that ``MyCoolThing`` (our class under test) generated and use ``src/test/resources/approval/string.verified`` for recording/saving the results:
 
-.. code-block:: java
 
-    @Test
-    public void myApprovals() {
-        String string = MyCoolThing.getComplexMultilineString();
-        Approvals.verify(string, Paths.get('src/resources/approval/string.verified');
-    }
+.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/GettingStartedExamples.java
+    :language: java
+    :lines: 13-17
 
 .. _gs-approval:
 
@@ -62,16 +60,9 @@ Approval class
 ================= 
 This is the main object for starting the ``approval`` process. Basically it is used like this:
 
-.. code-block:: java
-
-    @Test
-    public void myApprovals() {
-        String string = MyCoolThing.getComplexMultilineString();
-        Approval<String> approver = Approval.of(String.class)
-                .withReporter(Reporters.console())
-                .build();
-        approver.verify(string, Paths.get('src/resources/approval/string.verified');
-    }
+.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/GettingStartedExamples.java
+    :language: java
+    :lines: 19-26
 
 
 note how this is different from :ref:`gs-approvals` - we are building a custom ``Approval`` object which allows us to control and change the whole approval process. Look at :ref:`gs-reporter` and :ref:`gs-converter` for more info.
@@ -96,7 +87,7 @@ Reporters(in lack of better name) are used to prompt the user for approving the 
 
 Converter
 =========
-Converters are objects that are responsible for serializing objects to raw form(currently byte[]). This interface allows you to create a custom converter for your custom objects and reuse the approval process in the library. We have converters for all primitive types, String and their array variants. Of course providing a converter for your custom object is dead easy. Let's say you have a custom entity model class that you are going to use for verifications in your tests:
+Converters are objects that are responsible for serializing objects to raw form(currently :java:ref:`byte[]`). This interface allows you to create a custom converter for your custom objects and reuse the approval process in the library. We have converters for all primitive types, String and their array variants. Of course providing a converter for your custom object is dead easy. Let's say you have a custom entity class that you are going to use for verifications in your tests:
 
 .. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/Entity.java
     :language: java
@@ -129,10 +120,12 @@ Path mapper are used to abstract the way in which the final path file that conta
 You have the following class containing two verifications:
 
 .. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/PathMappersExample.java
+    :language: java
 
 now if you want to add another approval test you will need to write the same destination directory for the approval path again. You can of course write a private static method that does the mapping for you but we can do better with PathMappers:
 
 .. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/PathMappersExampleImproved.java
+    :language: java
 
 we abstracted the common parent directory with the help of the :java:ref:`ParentPathMapper` class. We provide other path mapper as part of the library that you can use:
 

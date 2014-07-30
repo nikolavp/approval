@@ -1,3 +1,5 @@
+.. java:import:: javax.annotation Nonnull
+
 .. java:import:: java.lang.reflect Array
 
 Converters
@@ -167,6 +169,6 @@ of
 ofArray
 ^^^^^^^
 
-.. java:method:: static Converter ofArray()
+.. java:method:: static <T> Converter<T> ofArray()
    :outertype: Converters
 
