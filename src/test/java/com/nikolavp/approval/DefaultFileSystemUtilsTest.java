@@ -92,4 +92,12 @@ public class DefaultFileSystemUtilsTest {
         new DefaultFileSystemUtils().touch(file.toPath());
         Assert.assertThat(file.exists(), equalTo(true));
     }
+
+    @Test
+    public void shouldDeleteDestinationIfItExistsOnMove() throws Exception {
+        final Path source = testFile.newFile("path-source").toPath();
+        final Path destination = testFile.newFile("path-destination").toPath();
+        new DefaultFileSystemUtils().move(source, destination);
+        Assert.assertThat(destination.toFile().exists(), equalTo(true));
+    }
 }

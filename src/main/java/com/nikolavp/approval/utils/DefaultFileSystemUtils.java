@@ -50,6 +50,9 @@ public class DefaultFileSystemUtils implements com.nikolavp.approval.utils.FileS
 
     @Override
     public void move(Path path, Path filePath) throws IOException {
+        if (Files.exists(filePath)) {
+            Files.delete(filePath);
+        }
         Files.move(path, filePath);
     }
 
