@@ -61,4 +61,9 @@ public class DefaultFileSystemUtils implements com.nikolavp.approval.utils.FileS
         }
     }
 
+    @Override
+    public void touch(Path pathToCreate) throws IOException {
+        Files.createFile(pathToCreate);
+    }
+
 }

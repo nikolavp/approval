@@ -171,4 +171,26 @@ public class ApprovalTest {
         verify(fileSystemUtils).createDirectories(new File("parent"));
         verify(fileSystemUtils).write(Approval.getApprovalPath(path), TestUtils.RAW_VALUE);
     }
+
+    @Test
+    public void shouldCreateAnEmptyResultPathBecauseSomeReportersRequireIt() throws Exception {
+        //act
+        new Approval<>(reporter, new DefaultConverter(), null, fileSystemUtils).verify(TestUtils.RAW_VALUE, testFile.path());
+
+        //assert
+        verify(fileSystemUtils).touch(testFile.path());
+
+    }
+
+    @Test(expected = AssertionError.class)
+    public void shouldThrowAnExceptionIfItCannotCreateTheResultPath() throws Exception {
+        //assign
+        doThrow(new IOException("test exception")).when(fileSystemUtils).touch(testFile.path());
+
+        //act
+        new Approval<>(reporter, new DefaultConverter(), null, fileSystemUtils).verify(TestUtils.RAW_VALUE, testFile.path());
+
+        //assert
+        verify(fileSystemUtils).touch(testFile.path());
+    }
 }

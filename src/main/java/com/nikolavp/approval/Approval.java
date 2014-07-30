@@ -193,9 +193,16 @@ public class Approval<T> {
     private void handleFirstTimeApproval(File file, Path approvalPath, byte[] rawValue) {
         try {
             fileSystemReadWriter.write(approvalPath, rawValue);
+
             approvalPath.toFile().deleteOnExit();
         } catch (IOException e) {
-            throw new AssertionError("Couldn't write file for approval " + approvalPath, e);
+            throw new AssertionError("Couldn't write path for approval " + approvalPath, e);
+        }
+        final Path path = file.toPath();
+        try {
+            fileSystemReadWriter.touch(path);
+        } catch (IOException ex) {
+            throw new AssertionError("Couldn't create path " + path);
         }
         reporter.approveNew(rawValue, approvalPath.toFile(), file);
     }

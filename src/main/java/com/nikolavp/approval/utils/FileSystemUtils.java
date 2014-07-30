@@ -61,4 +61,11 @@ public interface FileSystemUtils {
      */
     void createDirectories(File directory) throws IOException;
 
+    /**
+     * Creates the specified path with empty content.
+     *
+     * @param pathToCreate the path to create
+     * @throws IOException if there was error while creating the path
+     */
+    void touch(Path pathToCreate) throws IOException;
 }

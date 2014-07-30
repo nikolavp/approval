@@ -21,9 +21,13 @@ package com.nikolavp.approval.reporters;
  */
 
 import com.nikolavp.approval.Approval;
+import com.nikolavp.approval.Reporter;
 import com.nikolavp.approval.pathmappers.ParentPathMapper;
 import org.junit.Assume;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 import java.awt.GraphicsEnvironment;
 import java.nio.file.Paths;
@@ -34,36 +38,36 @@ import java.nio.file.Paths;
  * Date: 26/02/14
  * Time: 14:28
  */
-@org.junit.Ignore
-public class ReportersExamplesIT {
+@Ignore
+public class ReportersIT {
+
+    public static final ParentPathMapper<String> MAPPER = new ParentPathMapper<String>(Paths.get("target", "verifications", ReportersIT.class.getName()));
+
+    @Rule
+    public TestName testName = new TestName();
 
     @Test
     public void testGvimApprovalProcess() throws Exception {
-        Assume.assumeFalse(GraphicsEnvironment.isHeadless());
-        Approval<String> approval = Approval.of(String.class)
-                .withPathMapper(new ParentPathMapper<String>(Paths.get("target", "verifications")))
-                .withReporter(Reporters.gvim()).build();
-
-        approval.verify("some test content\n", Paths.get("target", "verifications", "testGvimApprovalProcess.txt"));
+        testReporter(Reporters.gvim());
     }
 
     @Test
     public void testConsoleApprovalProcess() throws Exception {
-        Assume.assumeFalse(GraphicsEnvironment.isHeadless());
-        Approval<String> approval = Approval.of(String.class)
-                .withPathMapper(new ParentPathMapper<String>(Paths.get("target", "verifications")))
-                .withReporter(Reporters.console())
-                .build();
-        approval.verify("some test content\n", Paths.get("target", "verifications", "testConsoleApprovalProcess.txt"));
+        testReporter(Reporters.console());
+
     }
 
     @Test
     public void testGeditApprovalProcess() throws Exception {
+        testReporter(Reporters.gedit());
+    }
+
+    private void testReporter(Reporter reporter) {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
         Approval<String> approval = Approval.of(String.class)
-                .withPathMapper(new ParentPathMapper<String>(Paths.get("target", "verifications")))
-                .withReporter(Reporters.gedit())
-                .build();
-        approval.verify("some test content\n", Paths.get("target", "verifications", "testGeditApprovalProcess.txt"));
+                .withPathMapper(MAPPER)
+                .withReporter(reporter).build();
+        approval.verify("some test content\n", Paths.get(testName.getMethodName()));
     }
+
 }

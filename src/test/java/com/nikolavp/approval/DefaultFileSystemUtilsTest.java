@@ -21,8 +21,8 @@ package com.nikolavp.approval;
  */
 
 import com.nikolavp.approval.utils.DefaultFileSystemUtils;
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.hamcrest.CoreMatchers.equalTo;
 
 /**
  * User: nikolavp
@@ -77,8 +79,17 @@ public class DefaultFileSystemUtilsTest {
     public void shouldProperlyMovePaths() throws Exception {
         final Path source = testFile.newFile("path-source").toPath();
         final Path destination = testFile.getRoot().toPath().resolve("path-destination");
-        Assert.assertThat(destination.toFile().exists(), CoreMatchers.equalTo(false));
+        Assert.assertThat(destination.toFile().exists(), equalTo(false));
         new DefaultFileSystemUtils().move(source, destination);
-        Assert.assertThat(destination.toFile().exists(), CoreMatchers.equalTo(true));
+        Assert.assertThat(destination.toFile().exists(), equalTo(true));
+    }
+
+    @Test
+    public void shouldProperlyCreatePath() throws Exception {
+        final File file = testFile.newFile("some-path");
+        Assume.assumeTrue(file.delete());
+        Assert.assertThat(file.exists(), equalTo(false));
+        new DefaultFileSystemUtils().touch(file.toPath());
+        Assert.assertThat(file.exists(), equalTo(true));
     }
 }
