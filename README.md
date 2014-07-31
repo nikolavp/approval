@@ -1,4 +1,4 @@
-Approval [![Build Status](https://secure.travis-ci.org/nikolavp/approval.png)](http://travis-ci.org/nikolavp/approval)
+Approval [![Build Status](https://secure.travis-ci.org/nikolavp/approval.png)](http://travis-ci.org/nikolavp/approval) [![Coverage Status](https://coveralls.io/repos/nikolavp/approval/badge.png)](https://coveralls.io/r/nikolavp/approval)
 =======
 Approval is an open source assertion/verification library to aid unit testing.
 
