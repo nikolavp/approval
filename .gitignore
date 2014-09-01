@@ -1,7 +1,7 @@
 *.class
 /bin
-/.idea
-/core.iml
-/target
+.idea
+*.iml
+target
 /doc/build
 /doc/.env
