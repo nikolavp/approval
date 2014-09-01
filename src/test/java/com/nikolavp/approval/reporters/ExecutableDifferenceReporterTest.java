@@ -37,6 +37,8 @@ import java.util.List;
 
 import static com.nikolavp.approval.TestUtils.RAW_VALUE;
 import static com.nikolavp.approval.TestUtils.forApproval;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -55,7 +57,7 @@ public class ExecutableDifferenceReporterTest {
 
     @Before
     public void setupMocks() {
-        executableDifferenceReporter = Mockito.spy(new ExecutableDifferenceReporter(GVIM_EXECUTABLE, GDIFFVIM_EXECUTABLE));
+        executableDifferenceReporter = Mockito.spy(new ExecutableDifferenceReporter(GVIM_EXECUTABLE, GDIFFVIM_EXECUTABLE, "gvimdiff"));
     }
 
     @Test(expected = AssertionError.class)
@@ -75,7 +77,7 @@ public class ExecutableDifferenceReporterTest {
                 executableDifferenceReporter.approveNew("test content".getBytes(StandardCharsets.UTF_8), forApproval(testFile), testFile.file());
                 Assert.fail("Should throw an exception");
             } catch (AssertionError error) {
-                Assert.assertTrue(true);
+                assertTrue(true);
             }
         }
     }
@@ -110,8 +112,8 @@ public class ExecutableDifferenceReporterTest {
     @Test
     public void shouldBuildTheCommandLineProperlyIfInitialCommandsHaveArguments() throws Exception {
         List<String> cmd = ExecutableDifferenceReporter.buildCommandline(GVIM_EXECUTABLE, "test");
-        Assert.assertThat(cmd.size(), CoreMatchers.equalTo(3));
-        Assert.assertThat(cmd.get(1), CoreMatchers.equalTo("-f"));
+        assertThat(cmd.size(), CoreMatchers.equalTo(3));
+        assertThat(cmd.get(1), CoreMatchers.equalTo("-f"));
     }
 
     @Test
@@ -128,5 +130,20 @@ public class ExecutableDifferenceReporterTest {
     public void shouldThrowAnExceptionIfExecutableIsNotFound() throws Exception {
         Process process = executableDifferenceReporter.startProcess("unexistingcommand", "-invalid-flag");
         process.waitFor();
+    }
+
+    @Test
+    public void shouldReportProperDiffCommandAndApprovalCommandsWhenAsked() throws Exception {
+        final String approvalCommand = executableDifferenceReporter.getApprovalCommand();
+        assertThat(approvalCommand, CoreMatchers.equalTo(GVIM_EXECUTABLE));
+
+        final String diffCommand = executableDifferenceReporter.getDiffCommand();
+        assertThat(diffCommand, CoreMatchers.equalTo(GDIFFVIM_EXECUTABLE));
+    }
+    
+    @Test
+    public void shouldNotCheckIfExecutableExistsIfItIsNull() throws Exception {
+        final boolean canApprove = new ExecutableDifferenceReporter(GVIM_EXECUTABLE, GDIFFVIM_EXECUTABLE, null).canApprove(testFile.file());
+        assertTrue(canApprove);
     }
 }

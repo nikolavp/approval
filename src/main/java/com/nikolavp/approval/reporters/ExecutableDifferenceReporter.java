@@ -21,7 +21,9 @@ package com.nikolavp.approval.reporters;
  */
 
 import com.nikolavp.approval.Reporter;
+import com.nikolavp.approval.utils.ExecutableExistsOnPath;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,16 +41,19 @@ import java.util.List;
 public class ExecutableDifferenceReporter implements Reporter {
     private final String diffCommand;
     private final String approvalCommand;
+    private final String executable;
 
     /**
      * Main constructor for the executable reporter.
      *
      * @param approvalCommand the approval command
      * @param diffCommand     the difference command
+     * @param executable the executable for which to check. If null we won't check for executable existance
      */
-    public ExecutableDifferenceReporter(String approvalCommand, String diffCommand) {
+    public ExecutableDifferenceReporter(String approvalCommand, String diffCommand, @Nullable String executable) {
         this.approvalCommand = approvalCommand;
         this.diffCommand = diffCommand;
+        this.executable = executable;
     }
 
     protected String getDiffCommand() {
@@ -91,6 +96,9 @@ public class ExecutableDifferenceReporter implements Reporter {
 
     @Override
     public boolean canApprove(File fileForApproval) {
+        if (executable != null) {
+            return new ExecutableExistsOnPath(executable).execute();
+        }
         return true;
     }
 
@@ -127,4 +135,5 @@ public class ExecutableDifferenceReporter implements Reporter {
         cmd.addAll(Arrays.asList(cmdParts).subList(1, cmdParts.length));
         return cmd;
     }
+
 }

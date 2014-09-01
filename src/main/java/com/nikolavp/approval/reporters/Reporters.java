@@ -22,6 +22,7 @@ package com.nikolavp.approval.reporters;
 
 import com.nikolavp.approval.Reporter;
 import com.nikolavp.approval.utils.CrossPlatformCommand;
+import com.nikolavp.approval.utils.ExecutableExistsOnPath;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,17 +39,22 @@ public final class Reporters {
 
     }
 
-    private static final Reporter VIM_INSTANCE = new ExecutableDifferenceReporter("gvimdiff -f", "gvimdiff -f");
-    private static final Reporter GEDIT = SwingInteractiveReporter.wrap(new ExecutableDifferenceReporter("gedit -w", "gedit -w") {
+    private static final Reporter VIM_INSTANCE = new ExecutableDifferenceReporter("gvimdiff -f", "gvimdiff -f", "gvimdiff");
+    private static final Reporter GEDIT = SwingInteractiveReporter.wrap(new ExecutableDifferenceReporter("gedit -w", "gedit -w", "gedit") {
         @Override
         protected String[] buildApproveNewCommand(File approvalDestination, File fileForVerification) {
             return new String[] {getApprovalCommand(), approvalDestination.getAbsolutePath()};
         }
     });
-    private static final Reporter CONSOLE_REPORTER_INSTANCE = SwingInteractiveReporter.wrap(new ExecutableDifferenceReporter("cat", "diff -u") {
+    private static final Reporter CONSOLE_REPORTER_INSTANCE = SwingInteractiveReporter.wrap(new ExecutableDifferenceReporter("cat", "diff -u", "cat") {
         @Override
         protected String[] buildApproveNewCommand(File approvalDestination, File fileForVerification) {
             return new String[] {getApprovalCommand(), approvalDestination.getAbsolutePath()};
+        }
+
+        @Override
+        public boolean canApprove(File fileForApproval) {
+            return super.canApprove(fileForApproval) && new ExecutableExistsOnPath("diff").execute();
         }
     });
 
@@ -109,7 +115,7 @@ public final class Reporters {
 
         } .execute();
 
-        return SwingInteractiveReporter.wrap(new ExecutableDifferenceReporter(cmd, cmd) {
+        return SwingInteractiveReporter.wrap(new ExecutableDifferenceReporter(cmd, cmd, null) {
             @Override
             protected String[] buildApproveNewCommand(File approvalDestination, File fileForVerification) {
                 return new String[]{getApprovalCommand(), approvalDestination.getAbsolutePath()};

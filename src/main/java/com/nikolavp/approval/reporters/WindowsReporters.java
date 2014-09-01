@@ -46,9 +46,10 @@ public final class WindowsReporters {
          *
          * @param approvalCommand the approval command
          * @param diffCommand     the difference command
+         * @param  executable     the executable which will be executed
          */
-        public WindowsExecutableReporter(String approvalCommand, String diffCommand) {
-            super(approvalCommand, diffCommand);
+        public WindowsExecutableReporter(String approvalCommand, String diffCommand, String executable) {
+            super(approvalCommand, diffCommand, executable);
         }
 
         @Override
@@ -57,16 +58,16 @@ public final class WindowsReporters {
         }
     }
 
-    private static final Reporter NOTEPAD_PLUS_PLUS = SwingInteractiveReporter.wrap(new WindowsExecutableReporter("cmd /C notepad++", "cmd /C notepad++") {
+    private static final Reporter NOTEPAD_PLUS_PLUS = SwingInteractiveReporter.wrap(new WindowsExecutableReporter("cmd /C notepad++", "cmd /C notepad++", "notepad++") {
         @Override
         protected String[] buildApproveNewCommand(File approvalDestination, File fileForVerification) {
             return new String[] {getApprovalCommand(), approvalDestination.getAbsolutePath()};
         }
     });
-    private static final ExecutableDifferenceReporter BEYOND_COMPARE = new WindowsExecutableReporter("cmd /C BCompare", "cmd /C BCompare");
-    private static final ExecutableDifferenceReporter TORTOISE_IMAGE_DIFF = new WindowsExecutableReporter("cmd /C TortoiseIDiff", "cmd /C TortoiseIDiff");
-    private static final ExecutableDifferenceReporter TORTOISE_TEXT_DIFF = new WindowsExecutableReporter("cmd /C TortoiseMerge", "cmd /C TortoiseMerge");
-    private static final ExecutableDifferenceReporter WIN_MERGE = new WindowsExecutableReporter("cmd /C WinMergeU", "cmd /C WinMergeU");
+    private static final ExecutableDifferenceReporter BEYOND_COMPARE = new WindowsExecutableReporter("cmd /C BCompare", "cmd /C BCompare", "BCompare");
+    private static final ExecutableDifferenceReporter TORTOISE_IMAGE_DIFF = new WindowsExecutableReporter("cmd /C TortoiseIDiff", "cmd /C TortoiseIDiff", "TortoiseIDiff");
+    private static final ExecutableDifferenceReporter TORTOISE_TEXT_DIFF = new WindowsExecutableReporter("cmd /C TortoiseMerge", "cmd /C TortoiseMerge", "TortoiseMerge");
+    private static final ExecutableDifferenceReporter WIN_MERGE = new WindowsExecutableReporter("cmd /C WinMergeU", "cmd /C WinMergeU", "WinMergeU");
 
     /**
      * A reporter that calls <a href="http://notepad-plus-plus.org/">notepad++</a> to show you the results.

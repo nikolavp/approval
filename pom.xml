@@ -32,6 +32,7 @@
         <coberturaCoverageRate>89</coberturaCoverageRate>
         <individual.coverage>70</individual.coverage>
         <guava.version>13.0.1</guava.version>
+        <cobertura.format>xml</cobertura.format>
     </properties>
     <build>
         <plugins>
@@ -101,13 +102,15 @@
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <format>xml</format>
+                    <format>${cobertura.format}</format>
                     <instrumentation>
                         <ignores>
                             <ignore>com.nikolavp.approval.reporters.*Reporters*</ignore>
+                            <ignore>com.nikolavp.approval.utils.*ExecutableExistsOnPath*</ignore>
                         </ignores>
                         <excludes>
                             <exclude>com/nikolavp/approval/reporters/*Reporters*.class</exclude>
+                            <exclude>com/nikolavp/approval/utils/*ExecutableExistsOnPath*.class</exclude>
                         </excludes>
                     </instrumentation>
                     <check>

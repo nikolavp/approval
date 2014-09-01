@@ -32,10 +32,10 @@ public final class MacOSReporters {
 
     }
 
-    private static final ExecutableDifferenceReporter KSDIFF = new ExecutableDifferenceReporter("ksdiff", "ksdiff");
-    private static final ExecutableDifferenceReporter DIFF_MERGE = new ExecutableDifferenceReporter("DiffMerge", "DiffMerge");
-    private static final ExecutableDifferenceReporter P4_MERGE = new ExecutableDifferenceReporter("p4merge", "p4merge");
-    private static final ExecutableDifferenceReporter TK_DIFF = new ExecutableDifferenceReporter("tkdiff", "tkdiff");
+    private static final ExecutableDifferenceReporter KSDIFF = new ExecutableDifferenceReporter("ksdiff", "ksdiff", "ksdiff");
+    private static final ExecutableDifferenceReporter DIFF_MERGE = new ExecutableDifferenceReporter("DiffMerge", "DiffMerge", "DiffMerge");
+    private static final ExecutableDifferenceReporter P4_MERGE = new ExecutableDifferenceReporter("p4merge", "p4merge", "p4merge");
+    private static final ExecutableDifferenceReporter TK_DIFF = new ExecutableDifferenceReporter("tkdiff", "tkdiff", "tkdiff");
 
     /**
      * A reporter that calls <a href="https://sourcegear.com/diffmerge/">diffmerge</a> to show you the results.

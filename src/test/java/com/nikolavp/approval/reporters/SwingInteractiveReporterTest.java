@@ -135,8 +135,8 @@ public class SwingInteractiveReporterTest {
         assertThat(interactiveReporter.canApprove(testFile.file()), equalTo(true));
     }
 
-    @Test
-    public void shouldNotCallSwingIfInHeadlessMode() throws Exception {
+    @Test(expected = AssertionError.class)
+    public void shouldThrowIfCalledInHeadlessMode() throws Exception {
         //assign
         doThrow(new AssertionError("error")).when(interactiveReporter).promptUser();
         doReturn(true).when(interactiveReporter).isHeadless();
