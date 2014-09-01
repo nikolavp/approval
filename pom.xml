@@ -1,22 +1,33 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation=" http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.nikolavp</groupId>
-    <artifactId>approval-core</artifactId>
+    <artifactId>approval</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/nikolavp/approval</url>
     <description>Approval is a Java library which will make you look at your testing from a whole different angle</description>
+
+    <modules>
+        <module>approval-core</module>
+        <module>approval-json</module>
+    </modules>
+
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
+
     <issueManagement>
         <system>github</system>
         <url>http://github.com/nikolavp/approval/issues#issue/</url>
     </issueManagement>
+
     <developers>
         <developer>
             <name>Nikola Petrov</name>
@@ -25,6 +36,7 @@
             <organizationUrl>https://github.com/nikolavp</organizationUrl>
         </developer>
     </developers>
+
     <properties>
         <github.global.userName>nikolavp</github.global.userName>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,6 +46,14 @@
         <guava.version>13.0.1</guava.version>
         <cobertura.format>xml</cobertura.format>
     </properties>
+
+    <scm>
+        <connection>scm:git:git@github.com:nikolavp/approval.git</connection>
+        <developerConnection>scm:git:git@github.com:nikolavp/approval.git</developerConnection>
+        <url>git@github.com:nikolavp/approval.git</url>
+        <tag>approval-core-0.2</tag>
+    </scm>
+
     <build>
         <plugins>
             <plugin>
@@ -103,16 +123,7 @@
                 <version>2.6</version>
                 <configuration>
                     <format>${cobertura.format}</format>
-                    <instrumentation>
-                        <ignores>
-                            <ignore>com.nikolavp.approval.reporters.*Reporters*</ignore>
-                            <ignore>com.nikolavp.approval.utils.*ExecutableExistsOnPath*</ignore>
-                        </ignores>
-                        <excludes>
-                            <exclude>com/nikolavp/approval/reporters/*Reporters*.class</exclude>
-                            <exclude>com/nikolavp/approval/utils/*ExecutableExistsOnPath*.class</exclude>
-                        </excludes>
-                    </instrumentation>
+                    <aggregate>true</aggregate>
                     <check>
                         <branchRate>${individual.coverage}</branchRate>
                         <lineRate>${individual.coverage}</lineRate>
@@ -218,6 +229,52 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <keyname>A16670BB</keyname>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <dependencies>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
@@ -251,61 +308,5 @@
             <scope>test</scope>
             <version>1.9.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.2.2</version>
-        </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <id>release-sign-artifacts</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.4</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <keyname>A16670BB</keyname>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-    <scm>
-        <connection>scm:git:git@github.com:nikolavp/approval.git</connection>
-        <developerConnection>scm:git:git@github.com:nikolavp/approval.git</developerConnection>
-        <url>git@github.com:nikolavp/approval.git</url>
-        <tag>approval-core-0.2</tag>
-    </scm>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Release Repository</name>
-            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 </project>

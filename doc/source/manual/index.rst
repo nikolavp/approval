@@ -10,18 +10,18 @@ Simple example of the library
 
 Let's try to test the simplest example possible:
 
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/SimpleExample.java
+.. literalinclude:: /../../approval-core/src/test/java/com/github/approval/example/SimpleExample.java
     :language: java
 
 now this class is not rocket science and if we want to test **getResult()**, we would write something like the following in JUnit:
 
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/SimpleExampleTest.java
+.. literalinclude:: /../../approval-core/src/test/java/com/github/approval/example/SimpleExampleTest.java
     :language: java
 
 this is quite terse and short. Can we do better? Actually because we support strings out of the box, approval is a lot shorter
 
 
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/SimpleExampleApprovalTest.java
+.. literalinclude:: /../../approval-core/src/test/java/com/github/approval/example/SimpleExampleApprovalTest.java
     :language: java
 
 when the latter is executed you will be prompted in your tool of choice to verify the result from **getResult()**. Verifying the result will vary from your tool of choice because some of them allow you to control the resulting file and others just show you what was the verification object.
@@ -58,13 +58,13 @@ In this section we will show you how to use a custom converter for a class that 
 
 Let's say you want to verify that the following entity object returned from your restful API will be represented properly in JSON by jackson:
 
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/converters/Person.java
+.. literalinclude:: /../../approval-core/src/test/java/com/github/approval/example/converters/Person.java
     :language: java
     :lines: 1-
 
 we will use the following **person** as an example:
 
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/converters/PersonJSONTest.java
+.. literalinclude:: /../../approval-core/src/test/java/com/github/approval/example/converters/PersonJSONTest.java
     :language: java
     :lines: 16
 
@@ -75,7 +75,7 @@ now in normal circumstances you will now have to do the following:
 
 * create a file representing the json serialization with the following content(for example named *person.json*):
 
-.. literalinclude:: /../../src/test/resources/person.json
+.. literalinclude:: /../../approval-core/src/test/resources/person.json
     :language: javascript
 
 * read the content of the file
@@ -85,7 +85,7 @@ now in normal circumstances you will now have to do the following:
 
 your code might be something like the following using `guava <http://code.google.com/p/guava-libraries/>`_
 
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/converters/PersonJSONTest.java
+.. literalinclude:: /../../approval-core/src/test/java/com/github/approval/example/converters/PersonJSONTest.java
     :language: java
 
 now run the tests and they should pass. Of course software is all about change so if you later change the representation of the person and add an age field, you will have to do the following:
@@ -101,7 +101,7 @@ Using approval
 ^^^^^^^^^^^^^^
 Using approval, we will first have to build a converter that converts our Person class to a string form(currently the library doesn't have a jackson converter). A simple converter like the following will work:
 
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/converters/JacksonConverter.java
+.. literalinclude:: /../../approval-core/src/test/java/com/github/approval/example/converters/JacksonConverter.java
     :language: java
 
 
@@ -111,7 +111,7 @@ Using approval, we will first have to build a converter that converts our Person
 now let's write our test:
 
 
-.. literalinclude:: /../../src/test/java/com/nikolavp/approval/example/converters/PersonApprovalTest.java
+.. literalinclude:: /../../approval-core/src/test/java/com/github/approval/example/converters/PersonApprovalTest.java
     :language: java
 
 .. note::
