@@ -72,7 +72,7 @@ public class SwingInteractiveReporter implements Reporter {
 
     private void interactWithUser(Path approvalPath, Path filePath) {
         if (isHeadless()) {
-            return;
+            throw new AssertionError("Cannot approve the new value in headless mode!");
         }
         final int wasTheResultOK = promptUser();
         if (wasTheResultOK == 0) {
