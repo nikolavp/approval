@@ -21,7 +21,7 @@ Just add the ``approval`` library as a dependency:
     <dependencies>
         <dependency>
             <groupId>com.github.nikolavp</groupId>
-            <artifactId>approval</artifactId>
+            <artifactId>approval-core</artifactId>
             <version>${approval.version}</version>
         </dependency>
     </dependencies>

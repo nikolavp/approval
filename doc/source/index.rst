@@ -25,5 +25,6 @@ Approval can be used for verifying objects that require more than a simple asser
 
    getting-started
    manual/index
+   manual/adapters
    faq
    javadoc/packages

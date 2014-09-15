@@ -93,9 +93,21 @@ public final class Reporters {
 
     /**
      * A reporter that launches the file under test. This is useful if you for example are generating an spreadsheet and want to verify it.
+     *
      * @return a reporter that launches the file
      */
     public static Reporter fileLauncher() {
+        return SwingInteractiveReporter.wrap(fileLauncherWithoutInteraction());
+    }
+
+
+    /**
+     * Same as {@link #fileLauncher} but doesn't do the swing interaction after it opens the file. This is mostly used to reuse the logic
+     * of file launching without adding the burden for prompting the user after that.
+     *
+     * @return a reporter that launches the file
+     */
+    public static Reporter fileLauncherWithoutInteraction() {
         final String cmd = new CrossPlatformCommand<String>() {
 
             @Override
@@ -115,12 +127,17 @@ public final class Reporters {
 
         } .execute();
 
-        return SwingInteractiveReporter.wrap(new ExecutableDifferenceReporter(cmd, cmd, null) {
+        return new ExecutableDifferenceReporter(cmd, cmd, null) {
             @Override
             protected String[] buildApproveNewCommand(File approvalDestination, File fileForVerification) {
                 return new String[]{getApprovalCommand(), approvalDestination.getAbsolutePath()};
             }
-        });
+
+            @Override
+            protected String[] buildNotTheSameCommand(File fileForVerification, File fileForApproval) {
+                return new String[]{getDiffCommand(), fileForApproval.getAbsolutePath()};
+            }
+        };
     }
 
     /**

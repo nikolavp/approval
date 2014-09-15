@@ -1,0 +1,5 @@
+digraph graphName {
+	"<http://test.urn>" -> "<Test label>" [label="http://predicate"];
+	"<http://test.urn1>" -> "<Test label1>" [label="http://predicate1"];
+}
+
