@@ -210,4 +210,31 @@ public class ApprovalTest {
         boolean fileLastModifiedWithin2SEconds = Math.abs(testFile.file().lastModified() - currentTimeMillis) < 2000;
         Assert.assertThat(fileLastModifiedWithin2SEconds, CoreMatchers.equalTo(true));
     }
+
+    @Test
+    public void getApprovalPathShouldPreserveExtensionForSyntaxHighlighting() throws Exception {
+        Path approvalPath = Approval.getApprovalPath(Paths.get("test/some/directory/file.txt"));
+
+        Assert.assertThat(approvalPath.toString(), CoreMatchers.equalTo("test/some/directory/file.forapproval.txt"));
+
+        approvalPath = Approval.getApprovalPath(Paths.get("test/some/directory.with.dots/file.txt"));
+        Assert.assertThat(approvalPath.toString(), CoreMatchers.equalTo("test/some/directory.with.dots/file.forapproval.txt"));
+
+        approvalPath = Approval.getApprovalPath(Paths.get("test/some/directory.with.dots/file.withTooBigExtension"));
+        Assert.assertThat(approvalPath.toString(), CoreMatchers.equalTo("test/some/directory.with.dots/file.forapproval.withTooBigExtension"));
+
+        approvalPath = Approval.getApprovalPath(Paths.get("test/some/directory/fileWithoutExtension"));
+        Assert.assertThat(approvalPath.toString(), CoreMatchers.equalTo("test/some/directory/fileWithoutExtension.forapproval"));
+
+
+        approvalPath = Approval.getApprovalPath(Paths.get("test/some/directory.with.dots/fileWithoutExtension"));
+        Assert.assertThat(approvalPath.toString(), CoreMatchers.equalTo("test/some/directory.with.dots/fileWithoutExtension.forapproval"));
+
+        approvalPath = Approval.getApprovalPath(Paths.get("fileNotInDir"));
+        Assert.assertThat(approvalPath.toString(), CoreMatchers.equalTo("fileNotInDir.forapproval"));
+
+
+        approvalPath = Approval.getApprovalPath(Paths.get("fileNotInDir.ext"));
+        Assert.assertThat(approvalPath.toString(), CoreMatchers.equalTo("fileNotInDir.forapproval.ext"));
+    }
 }

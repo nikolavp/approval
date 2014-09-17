@@ -27,8 +27,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * @param <T> the type of the object that will be approved by this {@link Approval}
  */
 public class Approval<T> {
-    private static final Logger LOG  = Logger.getLogger(Approval.class.getName());
+    private static final Logger LOG = Logger.getLogger(Approval.class.getName());
     private static final String FOR_APPROVAL_EXTENSION = ".forapproval";
     private final Reporter reporter;
     private final com.github.approval.utils.FileSystemUtils fileSystemReadWriter;
@@ -48,8 +48,9 @@ public class Approval<T> {
 
     /**
      * Create a new object that will be able to approve "things" for you.
-     * @param reporter  a reporter that will be notified as needed for approval events
-     * @param converter a converter that will be responsible for converting the type for approval to raw form
+     *
+     * @param reporter   a reporter that will be notified as needed for approval events
+     * @param converter  a converter that will be responsible for converting the type for approval to raw form
      * @param pathMapper the path mapper that will be used
      */
     Approval(Reporter reporter, Converter<T> converter, @Nullable PathMapper<T> pathMapper) {
@@ -89,7 +90,24 @@ public class Approval<T> {
     public static Path getApprovalPath(Path filePath) {
         Pre.notNull(filePath, "filePath");
 
-        return FileSystems.getDefault().getPath(filePath.toString() + FOR_APPROVAL_EXTENSION);
+        String s = filePath.toString();
+        int extensionIndex = s.lastIndexOf('.');
+
+        if (extensionIndex == -1) {
+            return Paths.get(s + FOR_APPROVAL_EXTENSION);
+        }
+
+        int lastPartOfPath = s.lastIndexOf('/');
+        if (lastPartOfPath != -1 && lastPartOfPath > extensionIndex) {
+            //there was no extension and the directory contains dots.
+            return Paths.get(s + FOR_APPROVAL_EXTENSION);
+        }
+
+        String firstPart = s.substring(0, extensionIndex);
+        String extension = s.substring(extensionIndex);
+
+        return Paths.get(firstPart + FOR_APPROVAL_EXTENSION + extension);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -262,6 +280,7 @@ public class Approval<T> {
 
         /**
          * Set a path mapper that will be used when building the path for approval results.
+         *
          * @param pathMapperToBeUsed the path mapper
          * @return the same builder for chaining
          */
