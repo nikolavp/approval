@@ -133,8 +133,3 @@ we abstracted the common parent directory with the help of the :java:ref:`Parent
 
 .. _gs-limitations:
 
-Limitations
-===========
-Some things that you have to keep in mind when using the library:
-
-* unordered objects like *HashSet*, *HashMap* cannot be determisticly verified because their representation will vary from run to run.
