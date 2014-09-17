@@ -172,6 +172,14 @@ public class Approval<T> {
             handleFirstTimeApproval(file, approvalPath, rawValue);
             return;
         }
+
+        // Change the modification time. This will allow users to delete orphaned files
+        // https://github.com/nikolavp/approval/issues/18
+        boolean wasAbleSetModified = file.setLastModified(System.currentTimeMillis());
+        if (!wasAbleSetModified) {
+            LOG.warning("We weren't able to change the modification date for " + file.getAbsolutePath());
+        }
+
         try {
             byte[] fileContent = fileSystemReadWriter.readFully(file.toPath());
             if (!Arrays.equals(fileContent, rawValue)) {

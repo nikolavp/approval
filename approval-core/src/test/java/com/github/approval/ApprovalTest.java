@@ -25,6 +25,8 @@ import com.github.approval.converters.Converters;
 import com.github.approval.converters.DefaultConverter;
 import com.github.approval.example.Entity;
 import com.github.approval.utils.FileSystemUtils;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +40,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -192,5 +195,19 @@ public class ApprovalTest {
 
         //assert
         verify(fileSystemUtils).touch(testFile.path());
+    }
+
+    @Test
+    public void shouldChangeTheModificationDateForFileUnderTest() throws Exception {
+        Files.write(testFile.file().toPath(), TestUtils.RAW_VALUE);
+        long currentTimeMillis = System.currentTimeMillis();
+        boolean b = testFile.file().setLastModified(0);
+        if (!b) {
+            throw new RuntimeException("Couldn't change last modified date for file under test!");
+        }
+
+        new Approval<>(reporter, new DefaultConverter(), null).verify(TestUtils.RAW_VALUE, testFile.file().toPath());
+        boolean fileLastModifiedWithin2SEconds = Math.abs(testFile.file().lastModified() - currentTimeMillis) < 2000;
+        Assert.assertThat(fileLastModifiedWithin2SEconds, CoreMatchers.equalTo(true));
     }
 }
