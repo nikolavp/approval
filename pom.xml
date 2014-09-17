@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.nikolavp</groupId>
     <artifactId>approval</artifactId>
-    <version>0.3</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/nikolavp/approval</url>
@@ -51,7 +51,7 @@
         <connection>scm:git:git@github.com:nikolavp/approval.git</connection>
         <developerConnection>scm:git:git@github.com:nikolavp/approval.git</developerConnection>
         <url>git@github.com:nikolavp/approval.git</url>
-        <tag>approval-0.3</tag>
+        <tag>approval-core-0.2</tag>
     </scm>
 
     <build>
