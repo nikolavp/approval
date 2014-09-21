@@ -21,3 +21,6 @@ I am getting Illegal state exteption with "<myclass> is not a primitive type cla
 This means that you are trying to create/use an :java:ref:`Approval` object that's for a non primitive type and you haven't specified a :ref:`gs-converter`
 
 
+Can I use the library in android?
+#################################
+No. Sadly the android framework is only `stubbed <http://stackoverflow.com/questions/8982631/error-java-lang-runtimeexception-stub-in-android-with-fitnesse-testing>`_ while you are writing/compiling your code. The only way you can run the tests is on the device/emulator which doesn't allow us to use the reporters properly.
