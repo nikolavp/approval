@@ -12,7 +12,7 @@ Sesame
 `Sesame <http://openrdf.callimachus.net/>`_ is one of the frameworks that we support out of the box. The integration allows you to verify :java:ref:`Graph` objects through graphviz.
 
 1. Ok so first you will need the dot binary otherwise our reporter will fail. Go to the `Graphviz <http://www.graphviz.org/>`_, download and install graphviz.
-1. Add the dependency in maven:
+2. Add the dependency in maven:
 
 .. code-block:: xml
 
@@ -24,7 +24,7 @@ Sesame
         </dependency>
     </dependencies>
 
-1. Now you will be able to approve graph objects with the following:
+3. Now you will be able to approve graph objects with the following:
 
 .. literalinclude:: /../../approval-sesame/src/test/java/com/github/approval/sesame/GraphApprovalExample.java
     :language: java
