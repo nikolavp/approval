@@ -24,8 +24,9 @@ import com.github.approval.Reporter;
 
 /**
  * Reporters that use macOS specific binaries, i.e. not cross platform programs.
- * <p/>
+ * <p>
  * If you are looking for something cross platform like gvim, emacs, you better look in {@link com.github.approval.reporters.Reporters}.
+ * </p>
  */
 public final class MacOSReporters {
     private MacOSReporters() {

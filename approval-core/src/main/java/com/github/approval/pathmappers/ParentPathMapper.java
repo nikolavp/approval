@@ -27,23 +27,23 @@ import javax.annotation.Nullable;
 import java.nio.file.Path;
 
 /**
- * A path mapper that will put all approvals in a common parent path. Let's say you want to put all your approval
+ * A path mapper that will put all approvals in a common parent path. 
+ *
+ * <p>Let's say you want to put all your approval
  * results in <b>src/test/resources/approval</b>(we assume a common maven directory structure) then you can use this
- * mapper as follows:
- * <p/>
+ * mapper like this
+ * </p>
  * <pre>{@code
  *  Approval approval = Approval.of(String.class)
  *  .withPathMapper(new ParentPathMapper(Paths.get("src/test/resources/approval")))
  *  .build();
  * }
  * </pre>
- * <p/>
  * now the following call
  * <pre>{@code
  *   approval.verify("Some cool string value", Paths.get("some_cool_value.txt");
  * }
  * </pre>
- * <p/>
  * will put the approved value in the file <b>src/test/resources/approval/some_cool_value.txt</b>
  *
  * @param <T> the value that will be approved

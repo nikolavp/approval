@@ -28,8 +28,9 @@ import java.io.File;
 
 /**
  * Reporters that use windows specific binaries, i.e. the programs that are used are not cross platform.
- * <p/>
+ * <p>
  * If you are looking for something cross platform like gvim, emacs, you better look in {@link com.github.approval.reporters.Reporters}.
+ * </p>
  */
 public final class WindowsReporters {
     private WindowsReporters() {

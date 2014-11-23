@@ -89,7 +89,6 @@ public final class SystemPropertyReporter implements Reporter {
     /**
      * A factory method that returns a reporter which will behave the same as the one specified in propertyName value.
      * For example the following instance
-     * <p/>
      * <pre>
      *     {@code
      *     SystemPropertyReporter.getInstance(&quote;response.reporter&quote;);

@@ -25,12 +25,10 @@ import com.github.approval.reporters.Reporters;
 import java.nio.file.Path;
 
 /**
- * Approvals for primitive types. This is a convenient static utility class that is the first thing to try when you want to use the library. If you happen to be lucky and
+ * Approvals for primitive types. 
+ * <p>This is a convenient static utility class that is the first thing to try when you want to use the library. If you happen to be lucky and
  * need to verify only primitive types or array of primitive types then we got you covered.
- * <p/>
- * User: github (Nikola Petrov)
- * Date: 07/04/14
- * Time: 11:38
+ * </p>
  */
 public final class Approvals {
     private static Reporter reporter = Reporters.gvim();
