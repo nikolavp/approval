@@ -35,16 +35,25 @@ import javax.annotation.Nonnull;
  */
 public final class JacksonJsonConverter<T> extends AbstractStringConverter<T> {
 
+    private static final JacksonJsonConverter SANE_DEFAULTS_INSTANCE = new JacksonJsonConverter(
+            new ObjectMapper()
+                    .enable(SerializationFeature.INDENT_OUTPUT)
+                    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                    .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                    .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+    );
 
     private final ObjectMapper mapper;
+
 
     private JacksonJsonConverter(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
-
     /**
      * Gets a converter with sane defaults from jackson. The sane defaults are the following:
+     *
      * <ul>
      *     <li>format/indent the output</li>
      *     <li>write dates in a human readable format</li>
@@ -59,10 +68,9 @@ public final class JacksonJsonConverter<T> extends AbstractStringConverter<T> {
         return SANE_DEFAULTS_INSTANCE;
     }
 
-
-
     /**
      * Gets a converter for the specified object mapper instance.
+     *
      * @param objectMapper the object mapper that will be used
      * @param <T> the type of objects that will be converted
      * @return a converter for the specified mapper instance
@@ -71,15 +79,20 @@ public final class JacksonJsonConverter<T> extends AbstractStringConverter<T> {
         return new JacksonJsonConverter<T>(objectMapper);
     }
 
-
-
-    private static final JacksonJsonConverter SANE_DEFAULTS_INSTANCE = new JacksonJsonConverter(
-            new ObjectMapper()
-                .enable(SerializationFeature.INDENT_OUTPUT)
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-    );
+    /**
+     * Integrates a special Jackson mixin entity which modifies the json representation of your
+     * entity through Jackson Annotations without actually touching it.
+     *
+     * @param entityClass class object of the entity you want to represent in json form.
+     * @param mixinClass  class object representing the standard Jackson Mixin which offers an indirect way
+     *                    to add annotations to ignore or do something else with the members
+     *                    of the entity you want to serialize without actually touching it.
+     *                    Learn more at: {@linktourl http://wiki.fasterxml.com/JacksonMixInAnnotations}
+     * @return same instance of converter for the specified mapper instance
+     */
+    public void withJacksonMixin(Class<?> entityClass, Class<?> mixinClass) {
+        mapper.addMixInAnnotations(entityClass, mixinClass);
+    }
 
     @Nonnull
     @Override
