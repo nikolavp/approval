@@ -20,21 +20,24 @@ package com.github.approval.converters;
  * #L%
  */
 
+import javax.annotation.Nonnull;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import javax.annotation.Nonnull;
-
 /**
  * A generic json converter that uses jackson for the serialization.
  *
- * @param <T> the type of objects that we are going to convert
+ * @param <T>
+ *            the type of objects that we are going to convert
  */
 public final class JacksonJsonConverter<T> extends AbstractStringConverter<T> {
 
+    private static final JacksonJsonConverter SANE_DEFAULTS_INSTANCE = new JacksonJsonConverter(
+            mapperWithSaneDefaults());
 
     private final ObjectMapper mapper;
 
@@ -42,44 +45,62 @@ public final class JacksonJsonConverter<T> extends AbstractStringConverter<T> {
         this.mapper = mapper;
     }
 
-
     /**
-     * Gets a converter with sane defaults from jackson. The sane defaults are the following:
+     * Gets a converter with sane defaults from jackson. The sane defaults are
+     * the following:
+     *
      * <ul>
-     *     <li>format/indent the output</li>
-     *     <li>write dates in a human readable format</li>
-     *     <li>sort properties alphabetically</li>
-     *     <li>don't include properties that were null</li>
+     * <li>format/indent the output</li>
+     * <li>write dates in a human readable format</li>
+     * <li>sort properties alphabetically</li>
+     * <li>don't include properties that were null</li>
      * </ul>
-     * @param <T> the type of objects that will be converted
+     * 
+     * @param <T>
+     *            the type of objects that will be converted
      * @return a converter with sane defaults
      */
     public static <T> JacksonJsonConverter<T> getInstanceWithSaneDefaults() {
-        //noinspection unchecked
+        // noinspection unchecked
         return SANE_DEFAULTS_INSTANCE;
     }
 
-
-
     /**
      * Gets a converter for the specified object mapper instance.
-     * @param objectMapper the object mapper that will be used
-     * @param <T> the type of objects that will be converted
+     *
+     * @param objectMapper
+     *            the object mapper that will be used
+     * @param <T>
+     *            the type of objects that will be converted
      * @return a converter for the specified mapper instance
      */
     public static <T> JacksonJsonConverter<T> getInstanceWithObjectMapper(ObjectMapper objectMapper) {
         return new JacksonJsonConverter<T>(objectMapper);
     }
 
-
-
-    private static final JacksonJsonConverter SANE_DEFAULTS_INSTANCE = new JacksonJsonConverter(
-            new ObjectMapper()
-                .enable(SerializationFeature.INDENT_OUTPUT)
+    /**
+     * Gets a new jackson mapper applying our sane defaults on top. The sane
+     * defaults are the following:
+     *
+     * <ul>
+     * <li>format/indent the output</li>
+     * <li>write dates in a human readable format</li>
+     * <li>sort properties alphabetically</li>
+     * <li>don't include properties that were null</li>
+     * </ul>
+     *
+     * <p>This method allows you to change the mapper in your own way, adding mixins and what not. The change
+     * was made by a request from https://github.com/nikolavp/approval/pull/23</p>
+     * 
+     * @return a jackson object mapper with sane defaults
+     */
+    public static ObjectMapper mapperWithSaneDefaults() {
+        return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-    );
+                .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+    }
 
     @Nonnull
     @Override
