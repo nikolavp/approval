@@ -26,6 +26,7 @@ import com.github.approval.utils.ExecutableExistsOnPath;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * Created with IntelliJ IDEA.
@@ -220,5 +221,42 @@ public final class Reporters {
      */
     public static Reporter noop() {
         return NOOP_REPORTER;
+    }
+
+    /**
+     * A reporter that auto approves every value passed to it.
+     * <p>
+     * This is especially useful when you are making a big change and want to
+     * auto approve a lot of things. You can then use your version control
+     * system(you are using one of those right?) to see a diff
+     * </p>
+     *
+     * @return the auto approving reporter
+     */
+    public Reporter autoApprove() {
+        return new Reporter() {
+            @Override
+            public void notTheSame(byte[] oldValue, File fileForVerification, byte[] newValue, File fileForApproval) {
+                autoApprove(fileForVerification, fileForApproval);
+            }
+
+            @Override
+            public void approveNew(byte[] value, File fileForApproval, File fileForVerification) {
+                autoApprove(fileForVerification, fileForApproval);
+            }
+
+            private void autoApprove(File fileForVerification, File fileForApproval) {
+                try {
+                    Files.move(fileForApproval.toPath(), fileForVerification.toPath());
+                } catch (IOException e) {
+                    throw new IllegalStateException("Couldn't auto approve the value in " + fileForApproval.getAbsolutePath(), e);
+                }
+            }
+
+            @Override
+            public boolean canApprove(File fileForApproval) {
+                return true;
+            }
+        };
     }
 }
