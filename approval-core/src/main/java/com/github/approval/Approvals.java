@@ -21,6 +21,8 @@ package com.github.approval;
  */
 
 import com.github.approval.reporters.Reporters;
+import com.github.approval.reporters.StringEqualsJunitReporter;
+import com.github.approval.reporters.SystemPropertyReporter;
 
 import java.nio.file.Path;
 
@@ -31,7 +33,12 @@ import java.nio.file.Path;
  * </p>
  */
 public final class Approvals {
-    private static Reporter reporter = Reporters.gvim();
+    private static Reporter reporter = Reporters.firstWorking(
+        SystemPropertyReporter.getInstance("default.approval.reporter"),
+        new StringEqualsJunitReporter(),
+        Reporters.console(),
+        Reporters.fileLauncher()
+    );
 
     private Approvals() {
     }

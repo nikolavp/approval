@@ -27,8 +27,17 @@ import java.lang.reflect.Method;
 import java.util.Locale;
 
 /**
- * A reporter that uses a reporter specified in a property value. This reporter is perfect for first parameter in
- * {@link Reporters#firstWorking(com.github.approval.Reporter...)}.
+ * A reporter that uses a reporter specified in a property value or environment variable.
+ * <p>
+ * The property name is used as is and the environment variable is build by replacing '.' with '_'. So the property
+ * <b>"default.approval.reporter"</b> will be searched as in system properties (-D parameters) and as
+ * <b>"DEFAULT_APPROVAL_REPORTER"</b> in environment variables.
+ *
+ * </p>
+ * <p>This reporter is perfect for
+ * first parameter in {@link Reporters#firstWorking(com.github.approval.Reporter...)}.
+ * </p>
+ *
  *
  * @see #getInstance(String)
  */
@@ -108,7 +117,7 @@ public final class SystemPropertyReporter implements Reporter {
     public static Reporter getInstance(String propertyName) {
         String property = System.getProperty(propertyName);
         if (property == null) {
-            property = System.getenv(propertyName.toUpperCase(Locale.ENGLISH));
+            property = System.getenv(propertyName.replace('.', '_').toUpperCase(Locale.ENGLISH));
         }
         if (property == null) {
             return Reporters.noop();
