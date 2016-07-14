@@ -43,7 +43,7 @@ class FirstWorkingReporter implements Reporter {
                 return;
             }
         }
-        throw new IllegalStateException("This should never happen. Can approve was not called?!");
+        throw new IllegalStateException("There is no reporter that can approve " + fileForVerification);
     }
 
     @Override
@@ -54,7 +54,7 @@ class FirstWorkingReporter implements Reporter {
                 return;
             }
         }
-        throw new IllegalStateException("This should never happen. Can approve was not called?!");
+        throw new IllegalStateException("There is no reporter that can approve " + fileForVerification);
     }
 
     @Override

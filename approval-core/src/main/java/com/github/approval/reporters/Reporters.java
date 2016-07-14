@@ -60,9 +60,10 @@ public final class Reporters {
 
     /**
      * Creates a convenient gvim reporter.
-     *
+     * <p>
      * This one will use gvimdiff for difference detection and gvim for approving new files.
      * The proper way to exit vim and not approve the new changes is with ":cq" - just have that in mind!
+     * </p>
      *
      * @return a reporter that uses vim under the hood
      */
@@ -72,9 +73,10 @@ public final class Reporters {
 
     /**
      * Creates a simple reporter that will print/report approvals to the console.
-     *
+     * <p>
      * This reporter will use convenient command line tools under the hood to only report the changes in finds.
      * This is perfect for batch modes or when you run your build in a CI server
+     * </p>
      *
      * @return a reporter that uses console unix tools under the hood
      */
@@ -125,7 +127,7 @@ public final class Reporters {
                 return "xdg-open";
             }
 
-        } .execute();
+        }.execute();
 
         return new ExecutableDifferenceReporter(cmd, cmd, null) {
             @Override
@@ -144,6 +146,7 @@ public final class Reporters {
      * A reporter that compares images. Currently this uses <a href="http://www.imagemagick.org/script/binary-releases.php">imagemagick</a>
      * for comparison. If you only want to view the new image on first approval and when there is a difference, then you better use the {@link #fileLauncher()}
      * reporter which will do this for you.
+     *
      * @return the reporter that uses ImagemMagick for comparison
      */
     public static Reporter imageMagick() {
@@ -162,9 +165,7 @@ public final class Reporters {
                         throw new IllegalStateException("Couldn't execute compare!");
                     }
                     other.approveNew(/* unused */newValue, /* only used value*/compareResult, /* unused */fileForVerification);
-                } catch (IOException e) {
-                    throw new AssertionError("Couldn't create file!", e);
-                } catch (InterruptedException e) {
+                } catch (IOException | InterruptedException e) {
                     throw new AssertionError("Couldn't create file!", e);
                 }
             }
@@ -193,4 +194,31 @@ public final class Reporters {
     }
 
 
+    private static final Reporter NOOP_REPORTER = new Reporter() {
+        @Override
+        public void notTheSame(byte[] oldValue, File fileForVerification, byte[] newValue, File fileForApproval) {
+            throw new UnsupportedOperationException("Shouldn't be called");
+        }
+
+        @Override
+        public void approveNew(byte[] value, File fileForApproval, File fileForVerification) {
+            throw new UnsupportedOperationException("Shouldn't be called");
+        }
+
+        @Override
+        public boolean canApprove(File fileForApproval) {
+            return false;
+        }
+    };
+
+    /**
+     * A reporter that always throws an exception and shouldn't be called. This can be used as a safe fallback
+     * for composing reporters. Note that it will return false in Reporter#canApprove so it shouldn't be called
+     * by the approval infrastructure.
+     *
+     * @return a reporter that does nothing and return false in can approve
+     */
+    public static Reporter noop() {
+        return NOOP_REPORTER;
+    }
 }

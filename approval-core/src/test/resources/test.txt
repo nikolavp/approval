@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <title>myTitle</title>
+<meta charset="utf-8"/>
+<link href="css/myscript.css"
+      rel="stylesheet"/>
+<script src="scripts/myscript.js">
+</script>
+</head>
+<body>
+...
+</body>
+</html>
+

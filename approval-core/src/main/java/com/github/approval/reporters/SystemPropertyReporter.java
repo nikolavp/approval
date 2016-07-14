@@ -24,6 +24,7 @@ import com.github.approval.Reporter;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 /**
  * A reporter that uses a reporter specified in a property value. This reporter is perfect for first parameter in
@@ -104,8 +105,15 @@ public final class SystemPropertyReporter implements Reporter {
      * @param propertyName the property name from which value we will get the class or the static method
      * @return the new reporter
      */
-    public static SystemPropertyReporter getInstance(String propertyName) {
-        return new SystemPropertyReporter(System.getProperty(propertyName));
+    public static Reporter getInstance(String propertyName) {
+        String property = System.getProperty(propertyName);
+        if (property == null) {
+            property = System.getenv(propertyName.toUpperCase(Locale.ENGLISH));
+        }
+        if (property == null) {
+            return Reporters.noop();
+        }
+        return new SystemPropertyReporter(property);
     }
 
     //visible for testing only

@@ -24,11 +24,6 @@ import org.junit.Test;
 
 import java.lang.reflect.Constructor;
 
-/**
- * User: github (Nikola Petrov)
- * Date: 07/04/14
- * Time: 10:43
- */
 public abstract class StaticUtilityTestAbstract {
 
     protected abstract Class<?> getUtilityClassUnderTest();
