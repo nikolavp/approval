@@ -39,7 +39,7 @@ public class StringEqualsJunitReporter extends AbstractReporter {
 
     @Override
     public void approveNew(byte[] value, File fileForApproval, File fileForVerification) {
-        Assert.assertEquals(new String(value, StandardCharsets.UTF_8), "");
+        Assert.assertEquals("", new String(value, StandardCharsets.UTF_8));
     }
 
     @Override

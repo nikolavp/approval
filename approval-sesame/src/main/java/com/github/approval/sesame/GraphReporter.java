@@ -31,7 +31,7 @@ import java.io.File;
  * <p>
  * A reporter that can be used to verify dot files. It will compile the file to an image and open it through
  * {@link com.github.approval.reporters.Reporters#fileLauncher()}.
- * <p/>
+ * </p>
  * <p>
  * Note that this reporter cannot be used for anything else and will give you an error beceause it will
  * try to compile the verification file with the "dot" command.

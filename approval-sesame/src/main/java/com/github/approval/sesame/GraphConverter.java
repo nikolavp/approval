@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 /**
  * <p>
  * A converter that accepts a sesame graph object and will return it's "dot" directed graph format.
- * <p/>
+ * </p>
  * <p>
  * You most probably want to use this in cojection with {@link com.github.approval.sesame.GraphReporter}.
  * </p>
