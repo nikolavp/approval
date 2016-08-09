@@ -1,5 +1,4 @@
 package com.github.approval.converters;
-
 /*
  * #%L
  * com.github.nikolavp:approval-json
@@ -9,9 +8,9 @@ package com.github.approval.converters;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,36 +19,28 @@ package com.github.approval.converters;
  * #L%
  */
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 
 /**
- * User: nikolavp (Nikola Petrov) Date: 14-9-1 Time: 17:12
+ * This class is a standard jackson mixin which offers an indirect way
+ * to add annotations to ignore or do something else with the members
+ * of the entity you want to serialize without actually touching it.
+ *
+ * This mixin simply ignores date, age and first name which
+ * we do not want to test of the Entity object!
+ *
+ * Learn more at: {@linktourl http://wiki.fasterxml.com/JacksonMixInAnnotations}
+ *
+ *
+ * @author Tsvetan Dimitrov <tsvetan.dimitrov@gmail.com>
  */
-public class Entity {
+public abstract class EntityMixin1 {
 
-    Date date;
-    String firstName;
-    String lastName;
-    int age;
-    String homeTown;
+    @JsonIgnore abstract Date getDate();
 
-    public String getFirstName() {
-        return firstName;
-    }
+    @JsonIgnore abstract int getAge();
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public String getHomeTown() {
-        return homeTown;
-    }
-
-    public Date getDate() {
-        return date;
-    }
+    @JsonIgnore abstract String getFirstName();
 }

@@ -39,18 +39,25 @@ public class JacksonJsonConverterTest {
         entity = new Entity();
         entity.age = 10;
         entity.date = new Date(0);
+        entity.firstName = "Tom";
+        entity.lastName = "Smith";
+        entity.homeTown = "Washington";
     }
 
     @Test
-    public void shouldCreateProperSerilazireWithSaneDefaults() throws Exception {
+    public void shouldCreateProperSerializationWithSaneDefaults() throws Exception {
         final JacksonJsonConverter<Entity> converter = JacksonJsonConverter.getInstanceWithSaneDefaults();
 
         Assert.assertThat(converter.getStringForm(entity), CoreMatchers.equalTo(
-                "{\n" +
-                "  \"age\" : 10,\n" +
-                "  \"date\" : \"1970-01-01T00:00:00.000+0000\"\n" +
-                "}")
+                "{\n  \"age\" : 10,\n  \"firstName\" : \"Tom\",\n  \"homeTown\" : \"Washington\",\n  \"lastName\" : \"Smith\"\n}")
         );
+    }
+
+    @Test
+    public void shouldSerializeEmptyWithSaneDefaults() throws Exception {
+        final JacksonJsonConverter<Entity> converter = JacksonJsonConverter.getInstanceWithSaneDefaults();
+        entity = new Entity();
+        Assert.assertThat(converter.getStringForm(entity), CoreMatchers.equalTo("{\n  \"age\" : 0\n}"));
     }
 
     @Test
@@ -58,7 +65,7 @@ public class JacksonJsonConverterTest {
         final JacksonJsonConverter<Entity> converter = JacksonJsonConverter.getInstanceWithObjectMapper(new ObjectMapper());
         final String stringForm = converter.getStringForm(entity);
 
-        Assert.assertThat(stringForm, CoreMatchers.equalTo("{\"date\":0,\"name\":null,\"age\":10}"));
+        Assert.assertThat(stringForm, CoreMatchers.equalTo("{\"date\":0,\"firstName\":\"Tom\",\"lastName\":\"Smith\",\"age\":10,\"homeTown\":\"Washington\"}"));
     }
 
 
@@ -74,5 +81,25 @@ public class JacksonJsonConverterTest {
 
         final JacksonJsonConverter<Entity> converter = JacksonJsonConverter.getInstanceWithObjectMapper(objectMapper);
         final String stringForm = converter.getStringForm(entity);
+    }
+
+    @Test
+    public void shouldIgnoreAgeDateFirstNameBasedOnJacksonMixinInfo() {
+        ObjectMapper objectMapper = JacksonJsonConverter.mapperWithSaneDefaults();
+        objectMapper.addMixInAnnotations(entity.getClass(), EntityMixin1.class);
+        final JacksonJsonConverter<Entity> converter = JacksonJsonConverter.getInstanceWithObjectMapper(objectMapper);
+        final String stringForm = converter.getStringForm(entity);
+
+        Assert.assertThat(stringForm, CoreMatchers.equalTo("{\n  \"homeTown\" : \"Washington\",\n  \"lastName\" : \"Smith\"\n}"));
+    }
+
+    @Test
+    public void shouldIgnoreLastNameHometownBasedOnJacksonMixinInfo() {
+        ObjectMapper objectMapper = JacksonJsonConverter.mapperWithSaneDefaults();
+        objectMapper.addMixInAnnotations(entity.getClass(), EntityMixin2.class);
+        final JacksonJsonConverter<Entity> converter = JacksonJsonConverter.getInstanceWithObjectMapper(objectMapper);
+        final String stringForm = converter.getStringForm(entity);
+
+        Assert.assertThat(stringForm, CoreMatchers.equalTo("{\n  \"age\" : 10,\n  \"firstName\" : \"Tom\"\n}"));
     }
 }
