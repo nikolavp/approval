@@ -219,8 +219,6 @@ public class Approval<T> {
     private void handleFirstTimeApproval(File file, Path approvalPath, byte[] rawValue) {
         try {
             fileSystemReadWriter.write(approvalPath, rawValue);
-
-            approvalPath.toFile().deleteOnExit();
         } catch (IOException e) {
             throw new AssertionError("Couldn't write path for approval " + approvalPath, e);
         }
