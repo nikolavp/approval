@@ -123,7 +123,7 @@ public final class Converters {
                             .append(i)
                             .append("] = ")
                             .append(String.valueOf(Array.get(value, i)))
-                            .append("\n");
+                            .append(System.lineSeparator());
                 }
                 return builder.toString();
             }

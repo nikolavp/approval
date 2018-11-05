@@ -47,7 +47,7 @@ public class ReflectiveBeanConverter<T> extends AbstractStringConverter<T> {
                     builder.append(field.getName())
                            .append(" = ")
                            .append(fieldValue)
-                           .append("\n");
+                           .append(System.lineSeparator());
                 }
             } catch (IllegalAccessException e) {
                 /* This shouldn't happen because we have set accessible = true */

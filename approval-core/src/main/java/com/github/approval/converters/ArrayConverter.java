@@ -53,7 +53,7 @@ public class ArrayConverter<T> extends AbstractStringConverter<T[]> {
                     .append(i)
                     .append("] = ")
                     .append(new String(typeConverter.getRawForm(values[i]), StandardCharsets.UTF_8))
-                    .append("\n");
+                    .append(System.lineSeparator());
         }
         return builder.toString();
     }
