@@ -52,7 +52,7 @@ public class ListConverter<T> extends AbstractStringConverter<List<T>> {
                     .append(i)
                     .append("] = ")
                     .append(new String(typeConverter.getRawForm(values.get(i)), StandardCharsets.UTF_8))
-                    .append("\n");
+                    .append(System.lineSeparator());
         }
         return builder.toString();
     }

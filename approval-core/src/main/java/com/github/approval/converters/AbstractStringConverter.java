@@ -41,7 +41,7 @@ public abstract class AbstractStringConverter<T> extends AbstractConverter<T> {
     }
 
     private String fixAtLeastOneBlankLineAtEOF(String value) {
-        return value.trim() + "\n\n";
+        return value.trim() + System.lineSeparator() + System.lineSeparator();
     }
 
     /**
